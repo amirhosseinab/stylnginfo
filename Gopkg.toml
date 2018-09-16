@@ -34,3 +34,6 @@
   go-version = "go1.10.3"
   install = ["./cmd/..."]
   ensure = "true"
+[[constraint]]
+  name = "github.com/gorilla/mux"
+  version = "1.6.2"
