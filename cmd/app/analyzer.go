@@ -1,6 +1,7 @@
 package app
 
 import (
+    "github.com/PuerkitoBio/goquery"
     "log"
     "regexp"
     "strings"
@@ -29,11 +30,6 @@ type (
         Name     string `json:"name"`
         FileName string `json:"fileName"`
     }
-
-    CSSFile struct {
-        File      *File    `json:"file"`
-        Selectors []string `json:"selectors"`
-    }
 )
 
 func NewAnalyzer(files ...*File) *Analyzer {
@@ -50,9 +46,21 @@ func NewFile(name, fileType, content string) *File {
 
 func (a *Analyzer) Analyze() {
     for _, f := range a.Files {
-        switch f.FileType {
-        case FileTypeCSS:
+        if f.FileType == FileTypeCSS {
             a.Selector = append(a.Selector, extractSelectors(f)...)
+        }
+    }
+    for _, f := range a.Files {
+        if f.FileType == FileTypeHTML {
+            doc, err := goquery.NewDocumentFromReader(strings.NewReader(f.Content))
+            if err != nil {
+                log.Fatal(err)
+            }
+            for _, s := range a.Selector {
+                doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
+                    log.Println(selection.Attr("class"))
+                })
+            }
         }
     }
 }
