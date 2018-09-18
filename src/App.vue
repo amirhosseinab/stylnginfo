@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>Please Select HTML & CSS Files to Analyze Them</h1>
         <UploadFiles></UploadFiles>
         <router-view/>
     </div>

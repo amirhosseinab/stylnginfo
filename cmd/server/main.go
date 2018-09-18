@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/amirhosseinab/stylnginfo/cmd/api"
     "github.com/gorilla/mux"
     "html/template"
     "net/http"
@@ -14,6 +15,10 @@ func main() {
 
     r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist", http.FileServer(http.Dir("dist"))))
     r.HandleFunc("/", IndexHandler)
+
+    a := r.PathPrefix("/api").Subrouter()
+    a.HandleFunc("/uploadFiles", api.UploadFilesHandler).Methods("POST")
+
     r.NotFoundHandler = http.HandlerFunc(IndexHandler)
 
     http.ListenAndServe(":"+port, r)

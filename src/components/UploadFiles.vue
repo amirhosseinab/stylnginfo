@@ -4,9 +4,10 @@
         <input type="button" value="Add HTML & CSS Files" @click="selectFile()">
         <ul class="selected-file-list">
             <li v-for="f in files">
-                <font-awesome-icon :icon="icons.code" class="file-icon"/>
+                <font-awesome-icon :icon="icons.file" size="lg"
+                                   :class="{'html-file':f.type==='text/html','css-file':f.type==='text/css'}"/>
                 <span>{{f.name}}</span>
-                <font-awesome-icon :icon="icons.close" class="close-icon" size="s" @click="remove(f)"/>
+                <font-awesome-icon :icon="icons.close" class="close-icon" size="1x" @click="remove(f)"/>
             </li>
         </ul>
         <input type="button" value="Analyze" @click="uploadFiles" v-show="files.length">
@@ -14,14 +15,15 @@
 </template>
 
 <script>
-    import {faCode, faTimes} from '@fortawesome/free-solid-svg-icons'
+    import {faFile, faTimes} from '@fortawesome/free-solid-svg-icons';
+    import axios from 'axios';
 
     export default {
         data() {
             return {
                 icons: {
                     close: faTimes,
-                    code: faCode,
+                    file: faFile,
                 },
                 files: [],
                 urls: []
@@ -46,6 +48,14 @@
                 });
             },
             uploadFiles() {
+                let formData = new FormData();
+                this.files.forEach(f => {
+                    formData.append('files', f, f.name)
+                });
+
+                axios.post("/api/uploadFiles", formData, {headers: {'Content-Type': 'multipart/form-data'}})
+                    .then(r => console.log(r))
+                    .catch(e => console.log(e));
 
             }
         }
