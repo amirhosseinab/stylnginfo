@@ -1,5 +1,11 @@
 package app
 
+import (
+    "log"
+    "regexp"
+    "strings"
+)
+
 const (
     FileTypeHTML = iota
     FileTypeCSS
@@ -46,7 +52,36 @@ func (a *Analyzer) Analyze() {
     for _, f := range a.Files {
         switch f.FileType {
         case FileTypeCSS:
-
+            a.Selector = append(a.Selector, extractSelectors(f)...)
         }
     }
+}
+
+func extractSelectors(file *File) []*Selector {
+    var result []*Selector
+    var selectors map[string]interface{}
+    selectors = make(map[string]interface{})
+
+    r, err := regexp.Compile("\\.[\\w\\-0-9\\s\\.:,\\*\\>\\(\\)]+{")
+    if err != nil {
+        log.Fatal(err)
+    }
+    items := r.FindAllString(file.Content, -1)
+    for _, item := range items {
+        refinedItem := item
+        refinedItem = strings.Trim(refinedItem, "{")
+
+        subItem := strings.Split(refinedItem, ",")
+        for _, s := range subItem {
+            s = strings.TrimSpace(s)
+            if _, ok := selectors[s]; !ok {
+                selectors[s] = nil
+                result = append(result, &Selector{
+                    Name:     s,
+                    FileName: file.Name,
+                })
+            }
+        }
+    }
+    return result
 }

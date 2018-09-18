@@ -54,7 +54,7 @@
                 });
 
                 axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-                    .then(r => console.log(r))
+                    .then(r => console.log(r.data))
                     .catch(e => console.log(e));
 
             }
