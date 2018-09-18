@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/amirhosseinab/stylnginfo/cmd/api"
+    "github.com/amirhosseinab/stylnginfo/cmd/app"
     "github.com/gorilla/mux"
     "html/template"
     "net/http"
@@ -17,7 +17,7 @@ func main() {
     r.HandleFunc("/", IndexHandler)
 
     a := r.PathPrefix("/api").Subrouter()
-    a.HandleFunc("/uploadFiles", api.UploadFilesHandler).Methods("POST")
+    a.HandleFunc("/analyze", app.UploadFilesHandler).Methods("POST")
 
     r.NotFoundHandler = http.HandlerFunc(IndexHandler)
 

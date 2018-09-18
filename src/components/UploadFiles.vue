@@ -53,7 +53,7 @@
                     formData.append('files', f, f.name)
                 });
 
-                axios.post("/api/uploadFiles", formData, {headers: {'Content-Type': 'multipart/form-data'}})
+                axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
                     .then(r => console.log(r))
                     .catch(e => console.log(e));
 
