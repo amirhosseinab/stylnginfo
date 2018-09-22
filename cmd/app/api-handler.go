@@ -16,10 +16,10 @@ func UploadFilesHandler(w http.ResponseWriter, r *http.Request) {
     for _, file := range files {
         fs = append(fs, NewFile(getFileInfo(file)))
     }
-    analyzer := NewAnalyzer(fs...)
-    analyzer.Analyze()
 
-    b, err := json.Marshal(analyzer)
+    result := AnalyzeFiles(fs...)
+
+    b, err := json.Marshal(result)
     if err != nil {
         log.Fatal(err)
     }

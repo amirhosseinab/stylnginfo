@@ -1,17 +1,21 @@
 <template>
     <div>
-        <h1>Please Select HTML & CSS Files to Analyze Them</h1>
-        <UploadFiles></UploadFiles>
-        <router-view/>
+        <MenuBar></MenuBar>
+        <FileManager></FileManager>
+        <AnalyzedData></AnalyzedData>
     </div>
 </template>
 
 <script>
-    import UploadFiles from '@/components/UploadFiles.vue';
+    import MenuBar from '@/components/MenuBar.vue';
+    import FileManager from '@/components/FileManager.vue';
+    import AnalyzedData from '@/components/AnalyzedData.vue';
 
     export default {
         components: {
-            UploadFiles
+            MenuBar,
+            FileManager,
+            AnalyzedData,
         }
     }
 </script>

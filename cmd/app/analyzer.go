@@ -15,26 +15,33 @@ const (
 type (
     FileType int
 
-    Analyzer struct {
-        Files    []*File     `json:"files"`
-        Selector []*Selector `json:"selectors,omitempty"`
+    AnalyzedData struct {
+        HTMLFiles []*HTMLFile `json:"htmlFiles"`
+        CSSFiles  []*CSSFile  `json:"cssFiles"`
     }
 
-    File struct {
-        Name     string   `json:"name"`
-        Content  string   `json:"content"`
-        FileType FileType `json:"fileType"`
+    HTMLFile struct {
+        Name             string      `json:"name"`
+        Content          string      `json:"-"`
+        AppliedSelectors []*Selector `json:"appliedSelectors"`
+    }
+
+    CSSFile struct {
+        Name      string   `json:"name"`
+        Content   string   `json:"-"`
+        Selectors []string `json:"selectors"`
     }
 
     Selector struct {
-        Name     string `json:"name"`
-        FileName string `json:"fileName"`
+        SelectorName string `json:"selectorName"`
+        CSSFileName  string `json:"cssFileName"`
+    }
+    File struct {
+        Name     string   `json:"name"`
+        Content  string   `json:"-"`
+        FileType FileType `json:"fileType"`
     }
 )
-
-func NewAnalyzer(files ...*File) *Analyzer {
-    return &Analyzer{Files: files}
-}
 
 func NewFile(name, fileType, content string) *File {
     types := map[string]FileType{
@@ -44,29 +51,42 @@ func NewFile(name, fileType, content string) *File {
     return &File{Name: name, Content: content, FileType: types[fileType]}
 }
 
-func (a *Analyzer) Analyze() {
-    for _, f := range a.Files {
+func AnalyzeFiles(files ...*File) *AnalyzedData {
+    result := &AnalyzedData{}
+
+    for _, f := range files {
         if f.FileType == FileTypeCSS {
-            a.Selector = append(a.Selector, extractSelectors(f)...)
+            cf := &CSSFile{Name: f.Name, Content: f.Content, Selectors: extractSelectors(f)}
+            result.CSSFiles = append(result.CSSFiles, cf)
         }
     }
-    for _, f := range a.Files {
+
+    for _, f := range files {
         if f.FileType == FileTypeHTML {
-            doc, err := goquery.NewDocumentFromReader(strings.NewReader(f.Content))
+            hf := &HTMLFile{Name: f.Name, Content: f.Content}
+
+            doc, err := goquery.NewDocumentFromReader(strings.NewReader(hf.Content))
             if err != nil {
                 log.Fatal(err)
             }
-            for _, s := range a.Selector {
-                doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
-                    log.Println(selection.Attr("class"))
-                })
+
+            for _, cf := range result.CSSFiles {
+                for _, s := range cf.Selectors {
+                    doc.Find(s).Each(func(_ int, selection *goquery.Selection) {
+                        selector := &Selector{SelectorName: s, CSSFileName:cf.Name}
+                        hf.AppliedSelectors = append(hf.AppliedSelectors, selector)
+                    })
+                }
             }
+
+            result.HTMLFiles = append(result.HTMLFiles, hf)
         }
     }
+    return result
 }
 
-func extractSelectors(file *File) []*Selector {
-    var result []*Selector
+func extractSelectors(file *File) []string {
+    var result []string
     var selectors map[string]interface{}
     selectors = make(map[string]interface{})
 
@@ -84,10 +104,7 @@ func extractSelectors(file *File) []*Selector {
             s = strings.TrimSpace(s)
             if _, ok := selectors[s]; !ok {
                 selectors[s] = nil
-                result = append(result, &Selector{
-                    Name:     s,
-                    FileName: file.Name,
-                })
+                result = append(result, s)
             }
         }
     }
