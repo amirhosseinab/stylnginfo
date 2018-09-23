@@ -1,5 +1,9 @@
 <template>
     <div class="result-pane">
+        <div v-show="waiting" class="waiting-block">
+            <font-awesome-icon :icon="icons.waiting" size="2x" spin/>
+            <span>Please wait...</span>
+        </div>
         <template v-for="hf in analyzedData.htmlFiles">
             <div class="html-file">
                 <div>{{hf.name}}</div>
@@ -21,10 +25,18 @@
 
 <script>
     import {mapGetters} from 'vuex'
+    import {faSpinner} from '@fortawesome/free-solid-svg-icons'
 
     export default {
+        data() {
+            return {
+                icons: {
+                    waiting: faSpinner,
+                }
+            }
+        },
         computed: {
-            ...mapGetters(['analyzedData', 'relatedCssFiles','relatedSelectors'])
+            ...mapGetters(['analyzedData', 'relatedCssFiles', 'relatedSelectors', 'waiting'])
         }
     }
 </script>

@@ -2,12 +2,12 @@
     <div class="menu-container">
         <input type="file" ref="fileInput" @change="addFiles($event.target)" multiple
                accept="text/css, text/html"/>
-        <font-awesome-icon :icon="icons.add" size="3x" class="btn btn-add-files" @click="selectFile" title="Add Files"/>
+        <font-awesome-icon :icon="icons.add" size="3x" class="btn btn-add-files" @click="selectFile" title="Add Files" :class="{'disabled':waiting}"/>
         <font-awesome-icon :icon="icons.remove" size="3x" class="btn btn-remove-files" @click="removeFiles"
-                           title="Remove Files" v-show="files.length"/>
+                           title="Remove Files" v-show="files.length" :class="{'disabled':waiting}"/>
         <div class="divider-v" v-show="files.length"></div>
         <font-awesome-icon :icon="icons.analyze" size="3x" class="btn btn-analyze-file" @click="uploadFiles"
-                           title="Analyze" v-show="files.length"/>
+                           title="Analyze" v-show="files.length" :class="{'disabled':waiting}"/>
     </div>
 </template>
 
@@ -26,7 +26,7 @@
             }
         },
         computed: {
-            ...mapGetters(['files'])
+            ...mapGetters(['files', 'waiting'])
         },
         methods: {
             ...mapMutations(['addFiles', 'removeFiles']),

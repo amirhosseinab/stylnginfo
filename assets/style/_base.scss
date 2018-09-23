@@ -10,6 +10,26 @@ body, html {
     font-size: $base-font-size;
 }
 
+.disabled {
+    background-color: #d2d2d2 !important;
+    cursor: not-allowed !important;
+}
+
+.waiting-block {
+    color: #848bad;
+    display: block;
+    text-align: center;
+    margin: 50px;
+    span {
+        padding: 10px;
+        display: inline-block;
+        vertical-align: top;
+        line-height: 0.7em;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+}
+
 .container {
     width: $page-width;
     margin: 0 auto;
@@ -184,5 +204,9 @@ ul.selected-file-list {
         color: #ff6262;
         cursor: pointer;
         float: right;
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        padding: 4px;
     }
 }
