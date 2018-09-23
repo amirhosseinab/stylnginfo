@@ -48,7 +48,7 @@ body, html {
 .result-pane {
     width: 80vw;
     float: left;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: calc(100vh - #{$menu-height});
     .html-file {
         display: block;
@@ -69,7 +69,7 @@ body, html {
             display: inline-block;
             font-family: monospace;
             font-size: 0.7em;
-            color: #ffffff;
+            color: #0a6126;
             border-radius: 5px;
             text-align: center;
             padding: 10px 20px;
@@ -90,6 +90,11 @@ body, html {
             margin: 5px;
             color: #424242;
             background-color: #bbff8f;
+            cursor: pointer;
+
+            &.selected {
+                background-color: #ffe004!important;
+            }
         }
     }
 

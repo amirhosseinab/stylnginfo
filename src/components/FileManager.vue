@@ -5,7 +5,7 @@
                 <font-awesome-icon :icon="icons.file" size="lg"
                                    :class="{'html-file':f.type==='text/html','css-file':f.type==='text/css'}"/>
                 <span>{{f.name}}</span>
-                ing<font-awesome-icon :icon="icons.close" class="close-icon" size="1x" @click="removeFile(f)"
+                <font-awesome-icon :icon="icons.close" class="close-icon" size="1x" @click="removeFile(f)"
                                    :class="{'disabled':waiting}"/>
             </li>
         </ul>

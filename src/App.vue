@@ -1,8 +1,8 @@
 <template>
     <div>
         <MenuBar></MenuBar>
-        <FileManager></FileManager>
-        <AnalyzedData></AnalyzedData>
+        <FileManager v-show="files.length"></FileManager>
+        <AnalyzedData v-show="files.length"></AnalyzedData>
     </div>
 </template>
 
@@ -10,8 +10,12 @@
     import MenuBar from '@/components/MenuBar.vue';
     import FileManager from '@/components/FileManager.vue';
     import AnalyzedData from '@/components/AnalyzedData.vue';
+    import {mapGetters} from 'vuex'
 
     export default {
+        computed: {
+            ...mapGetters(['files'])
+        },
         components: {
             MenuBar,
             FileManager,

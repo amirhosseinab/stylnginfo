@@ -17,25 +17,25 @@ type (
 
     AnalyzedData struct {
         HTMLFiles []*HTMLFile `json:"htmlFiles"`
-        CSSFiles  []*CSSFile  `json:"cssFiles"`
     }
 
     HTMLFile struct {
-        Name             string      `json:"name"`
-        Content          string      `json:"-"`
-        AppliedSelectors []*Selector `json:"appliedSelectors"`
+        Name     string     `json:"name"`
+        Content  string     `json:"-"`
+        CSSFiles []*CSSFile `json:"cssFiles"`
     }
 
     CSSFile struct {
-        Name      string   `json:"name"`
-        Content   string   `json:"-"`
-        Selectors []string `json:"selectors"`
+        Name      string      `json:"name"`
+        Content   string      `json:"-"`
+        Selectors []*Selector `json:"selectors"`
     }
 
     Selector struct {
-        SelectorName string `json:"selectorName"`
-        CSSFileName  string `json:"cssFileName"`
+        Name     string `json:"name"`
+        Selected bool   `json:"selected"`
     }
+
     File struct {
         Name     string   `json:"name"`
         Content  string   `json:"-"`
@@ -53,16 +53,18 @@ func NewFile(name, fileType, content string) *File {
 
 func AnalyzeFiles(files ...*File) *AnalyzedData {
     result := &AnalyzedData{}
+    var cssFiles []*CSSFile
 
     for _, f := range files {
         if f.FileType == FileTypeCSS {
             cf := &CSSFile{Name: f.Name, Content: f.Content, Selectors: extractSelectors(f)}
-            result.CSSFiles = append(result.CSSFiles, cf)
+            cssFiles = append(cssFiles, cf)
         }
     }
 
     for _, f := range files {
         if f.FileType == FileTypeHTML {
+
             hf := &HTMLFile{Name: f.Name, Content: f.Content}
 
             doc, err := goquery.NewDocumentFromReader(strings.NewReader(hf.Content))
@@ -70,29 +72,33 @@ func AnalyzeFiles(files ...*File) *AnalyzedData {
                 log.Fatal(err)
             }
 
-            var ts map[string]bool
-            ts = make(map[string]bool)
+            for _, cf := range cssFiles {
 
-            for _, cf := range result.CSSFiles {
+                var ts map[string]bool
+                ts = make(map[string]bool)
+                cssFile := &CSSFile{Name: cf.Name, Selectors: []*Selector{}}
+
                 for _, s := range cf.Selectors {
-                    doc.Find(s).Each(func(_ int, selection *goquery.Selection) {
-                        if _, ok := ts[cf.Name+s]; !ok {
-                            selector := &Selector{SelectorName: s, CSSFileName: cf.Name}
-                            hf.AppliedSelectors = append(hf.AppliedSelectors, selector)
-                            ts[cf.Name+s] = true
+                    doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
+                        if _, ok := ts[s.Name]; !ok {
+                            cssFile.Selectors = append(cssFile.Selectors, s)
+                            ts[s.Name] = true
                         }
                     })
                 }
-            }
 
+                if len(cssFile.Selectors) > 0 {
+                    hf.CSSFiles = append(hf.CSSFiles, cssFile)
+                }
+            }
             result.HTMLFiles = append(result.HTMLFiles, hf)
         }
     }
     return result
 }
 
-func extractSelectors(file *File) []string {
-    var result []string
+func extractSelectors(file *File) []*Selector {
+    var result []*Selector
     var selectors map[string]interface{}
     selectors = make(map[string]interface{})
 
@@ -110,7 +116,7 @@ func extractSelectors(file *File) []string {
             s = strings.TrimSpace(s)
             if _, ok := selectors[s]; !ok {
                 selectors[s] = nil
-                result = append(result, s)
+                result = append(result, &Selector{Name: s, Selected: false})
             }
         }
     }

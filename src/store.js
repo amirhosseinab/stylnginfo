@@ -14,24 +14,7 @@ export default new Vuex.Store({
         waiting: s => s.waiting,
         files: s => s.files,
         analyzedData: s => s.analyzedData,
-        relatedCssFiles: s => htmlFileName => {
-            var hf = s.analyzedData.htmlFiles.find(h => h.name === htmlFileName);
-            if (!hf) return [];
-            return [...new Set(hf.appliedSelectors.map(sel => sel.cssFileName))]
-        },
-        relatedSelectors: s => (htmlFileName, cssFileName) => {
-            var hf = s.analyzedData.htmlFiles.find(h => h.name === htmlFileName);
-            if (!hf) return [];
-
-            var selectors = hf.appliedSelectors.filter(s => s.cssFileName === cssFileName);
-            if (!selectors) return [];
-
-            var fs = selectors.reduce((acc, c) => {
-                acc.push(c.selectorName);
-                return acc;
-            }, []);
-            return [...new Set(fs)]
-        },
+        htmlFiles: s => s.analyzedData.htmlFiles,
     },
     mutations: {
         addFiles(s, p) {
@@ -59,6 +42,17 @@ export default new Vuex.Store({
         removeFile(s, p) {
             if (s.waiting) return;
             s.files.splice(s.files.indexOf(p), 1);
+        },
+        selectSelectors(s, p) {
+            s.analyzedData.htmlFiles
+                .find(hf => hf.name === p.htmlFileName).cssFiles
+                .forEach(cf => {
+                    cf.selectors
+                        .filter(s => s.name === p.selector)
+                        .forEach(s => {
+                            s.selected = !s.selected
+                        })
+                });
         },
         wait(s, p) {
             s.waiting = p;
