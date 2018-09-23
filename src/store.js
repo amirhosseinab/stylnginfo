@@ -10,12 +10,26 @@ export default new Vuex.Store({
         analyzedData: {}
     },
     getters: {
-        files(s) {
-            return s.files;
+        files: s => s.files,
+        analyzedData: s => s.analyzedData,
+        relatedCssFiles: s => htmlFileName => {
+            var hf = s.analyzedData.htmlFiles.find(h => h.name === htmlFileName);
+            if (!hf) return [];
+            return [...new Set(hf.appliedSelectors.map(sel => sel.cssFileName))]
         },
-        analyzedData(s) {
-            return s.analyzedData;
-        }
+        relatedSelectors: s => (htmlFileName, cssFileName) => {
+            var hf = s.analyzedData.htmlFiles.find(h => h.name === htmlFileName);
+            if (!hf) return [];
+
+            var selectors = hf.appliedSelectors.filter(s => s.cssFileName === cssFileName);
+            if (!selectors) return [];
+
+            var fs = selectors.reduce((acc, c) => {
+                acc.push(c.selectorName);
+                return acc;
+            }, []);
+            return [...new Set(fs)]
+        },
     },
     mutations: {
         addFiles(s, p) {
@@ -35,6 +49,7 @@ export default new Vuex.Store({
         },
         removeFiles(s) {
             s.files = [];
+            s.analyzedData = {};
         },
         removeFile(s, p) {
             s.files.splice(s.files.indexOf(p), 1);
@@ -48,10 +63,7 @@ export default new Vuex.Store({
             });
 
             axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-                .then(r => {
-                    console.log(r.data)
-                    commit('setAnalyzedData', r.data);
-                })
+                .then(r => commit('setAnalyzedData', r.data))
                 .catch(e => console.log(e));
         }
     }

@@ -70,11 +70,17 @@ func AnalyzeFiles(files ...*File) *AnalyzedData {
                 log.Fatal(err)
             }
 
+            var ts map[string]bool
+            ts = make(map[string]bool)
+
             for _, cf := range result.CSSFiles {
                 for _, s := range cf.Selectors {
                     doc.Find(s).Each(func(_ int, selection *goquery.Selection) {
-                        selector := &Selector{SelectorName: s, CSSFileName:cf.Name}
-                        hf.AppliedSelectors = append(hf.AppliedSelectors, selector)
+                        if _, ok := ts[cf.Name+s]; !ok {
+                            selector := &Selector{SelectorName: s, CSSFileName: cf.Name}
+                            hf.AppliedSelectors = append(hf.AppliedSelectors, selector)
+                            ts[cf.Name+s] = true
+                        }
                     })
                 }
             }

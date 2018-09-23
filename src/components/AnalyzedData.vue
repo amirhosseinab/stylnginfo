@@ -1,14 +1,21 @@
 <template>
     <div class="result-pane">
-        <ul>
-            <li v-for="hf in analyzedData.htmlFiles" class="html-file">
-                {{hf.name}}
-                <div v-for="selector in hf.appliedSelectors">
-                    <span class="css-file-name">{{selector.cssFileName}}</span>
-                    <span class="css-selector-name">{{selector.selectorName}}</span>
+        <template v-for="hf in analyzedData.htmlFiles">
+            <div class="html-file">
+                <div>{{hf.name}}</div>
+                <div class="css-files-block">
+                    <div v-for="cf in relatedCssFiles(hf.name)" class="css-file">
+                        {{cf}}
+
+                        <div class="selectors-block">
+                            <div v-for="sel in relatedSelectors(hf.name,cf)" class="selector">
+                                {{sel}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -17,7 +24,7 @@
 
     export default {
         computed: {
-            ...mapGetters(['analyzedData'])
+            ...mapGetters(['analyzedData', 'relatedCssFiles','relatedSelectors'])
         }
     }
 </script>

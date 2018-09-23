@@ -18,8 +18,7 @@ body, html {
 
 .file-manager-pane {
     width: 20vw;
-    min-width: 350px;
-    height: calc(100vh - #{$menu-height});
+    max-height: calc(100vh - #{$menu-height});
     border-right: $divider;
     overflow: auto;
     display: block;
@@ -27,30 +26,53 @@ body, html {
 }
 
 .result-pane {
-    width: 70vw;
-    max-width: 1400px;
+    width: 80vw;
     float: left;
-    li.html-file {
+    overflow-y: scroll;
+    max-height: calc(100vh - #{$menu-height});
+    .html-file {
         display: block;
-        padding: 5px;
-        border-radius: 5px;
-        background-color: #ececec;
-        width: 300px;
-        margin: 5px;
+        font-size: 2.5em;
+        font-weight: 700;
         font-family: monospace;
-        .css-file-name{
+        color: #ffec5e;
+        border-radius: 10px;
+        text-align: center;
+        padding: 20px;
+        margin: 20px 50px;
+        background-color: #848bad;
+    }
+    .css-files-block {
+        margin-top: 10px;
+        text-align: left;
+        .css-file {
             display: inline-block;
-            margin: 10px;
-            color: #7384dc;
-            font-weight: bold;
-        }
-        .css-selector-name{
-            display: inline-block;
-            margin: 10px;
-            color: #b92cdc;
-            font-weight: bold;
+            font-family: monospace;
+            font-size: 0.7em;
+            color: #ffffff;
+            border-radius: 5px;
+            text-align: center;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #40e06e;
         }
     }
+    .selectors-block {
+        display: block;
+        margin: 10px;
+        text-align: left;
+        .selector {
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 0.7em;
+            text-align: center;
+            padding: 10px 20px;
+            margin: 5px;
+            color: #424242;
+            background-color: #bbff8f;
+        }
+    }
+
 }
 
 .menu-container {
