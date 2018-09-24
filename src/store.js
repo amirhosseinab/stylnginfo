@@ -8,13 +8,19 @@ export default new Vuex.Store({
     state: {
         waiting: false,
         files: [],
-        analyzedData: {}
+        analyzedData: null,
     },
     getters: {
         waiting: s => s.waiting,
+        analyzed: s => !!s.analyzedData,
         files: s => s.files,
         analyzedData: s => s.analyzedData,
-        htmlFiles: s => s.analyzedData.htmlFiles,
+        htmlFiles: s => {
+            return s.files.filter(f => f.type === 'text/html') || []
+        },
+        cssFiles: s => {
+            return s.files.filter(f => f.type === 'text/css') || []
+        },
     },
     mutations: {
         addFiles(s, p) {
@@ -37,7 +43,7 @@ export default new Vuex.Store({
             if (s.waiting) return;
 
             s.files = [];
-            s.analyzedData = {};
+            s.analyzedData = null;
         },
         removeFile(s, p) {
             if (s.waiting) return;
@@ -59,7 +65,7 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        uploadFiles({commit, getters}) {
+        analyzeFiles({commit, getters}) {
             if (getters.waiting) return;
             commit('wait', true);
 

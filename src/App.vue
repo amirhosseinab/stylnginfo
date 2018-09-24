@@ -1,14 +1,14 @@
 <template>
     <div>
-        <MenuBar></MenuBar>
-        <FileManager v-show="files.length"></FileManager>
+        <HeaderSection/>
+        <Sidebar></Sidebar>
         <AnalyzedData v-show="files.length"></AnalyzedData>
     </div>
 </template>
 
 <script>
-    import MenuBar from '@/components/MenuBar.vue';
-    import FileManager from '@/components/FileManager.vue';
+    import HeaderSection from '@/components/HeaderSection.vue';
+    import Sidebar from '@/components/Sidebar.vue';
     import AnalyzedData from '@/components/AnalyzedData.vue';
     import {mapGetters} from 'vuex'
 
@@ -17,8 +17,8 @@
             ...mapGetters(['files'])
         },
         components: {
-            MenuBar,
-            FileManager,
+            HeaderSection,
+            Sidebar,
             AnalyzedData,
         }
     }
