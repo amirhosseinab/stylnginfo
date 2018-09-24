@@ -1,15 +1,21 @@
 <template>
-    <ul class="file-list">
-        <li v-for="f in files" class="file-list-item">
-            <div class="file">
-                <font-awesome-icon :icon="icons.file" size="lg"
-                                   :class="{'html':f.type==='text/html','css':f.type==='text/css'}"/>
-                <span class="file-name">{{f.name}}</span>
-                <font-awesome-icon :icon="icons.close" class="remove icon" size="1x" @click="removeFile(f)"
-                                   :class="{'disabled':waiting}" v-show="!analyzed"/>
-            </div>
-        </li>
-    </ul>
+    <div>
+        <div v-show="!files.length" class="info">
+            HTML & CSS files will show here
+        </div>
+        <ul class="file-list">
+            <li v-for="f in files" class="file-list-item">
+                <div class="file">
+                    <font-awesome-icon :icon="icons.file" size="lg"
+                                       :class="{'html':f.type==='text/html','css':f.type==='text/css'}"/>
+                    <span class="file-name">{{f.name}}</span>
+                    <font-awesome-icon :icon="icons.close" class="remove icon" size="1x" @click="removeFile(f)"
+                                       :class="{'disabled':waiting}" v-show="!analyzed"/>
+                </div>
+            </li>
+        </ul>
+    </div>
+
 </template>
 <script>
     import {faFile, faTimes} from '@fortawesome/free-solid-svg-icons';

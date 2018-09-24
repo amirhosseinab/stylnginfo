@@ -1,14 +1,7 @@
 <template>
     <div class="sidebar">
-        <div v-show="!files.length" class="info">
-            HTML & CSS files will show here
-        </div>
-
         <FileList/>
         <FilterPanel/>
-        <div v-show="!files.length" class="info">
-            Filter data will show here
-        </div>
     </div>
 </template>
 

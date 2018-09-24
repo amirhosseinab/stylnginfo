@@ -3,6 +3,9 @@
         <div class="filter-toolbox">
 
         </div>
+        <div v-show="!files.length" class="info">
+            Filter data will show here
+        </div>
         <ul>
             <li v-for="f in htmlFileNames" class="filter-item">
                 <span class="html" :class="{'selected':false}">{{f}}</span>
@@ -18,13 +21,13 @@
 
     export default {
         computed: {
-            ...mapGetters(['htmlFileNames', 'cssFileNames'])
+            ...mapGetters(['files','htmlFileNames', 'cssFileNames'])
         }
     }
 </script>
 <style lang="scss">
     .filter-panel {
-        max-height: calc(100% - #{$file-list-height});
+        height: calc(100% - #{$file-list-height});
         ul {
             overflow: auto;
             margin: 0;
