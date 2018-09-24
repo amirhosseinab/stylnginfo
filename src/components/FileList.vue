@@ -51,8 +51,13 @@
             .file {
                 .file-name {
                     color: $light-gray-color;
-                    margin-left: 7px;
+                    padding-left: 7px;
                     display: inline-block;
+                    width: 87%;
+                    vertical-align: middle;
+                }
+                .html,.css{
+                    width: 5%;
                 }
                 .html {
                     color: $blue-color;
@@ -63,11 +68,12 @@
                 .remove.icon {
                     color: lighten($red-color, 15%);
                     cursor: pointer;
-                    float: right;
                     display: inline-block;
                     height: 20px;
-                    width: 20px;
-                    padding: 4px
+                    width: 8%;
+                    min-width: 13px;
+                    padding: 4px;
+                    vertical-align: middle;
                 }
             }
         }
