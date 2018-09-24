@@ -15,11 +15,11 @@ export default new Vuex.Store({
         analyzed: s => !!s.analyzedData,
         files: s => s.files,
         analyzedData: s => s.analyzedData,
-        htmlFiles: s => {
-            return s.files.filter(f => f.type === 'text/html') || []
+        htmlFileNames: s => {
+            return s.files.filter(f => f.type === 'text/html').map(f => f.name) || []
         },
-        cssFiles: s => {
-            return s.files.filter(f => f.type === 'text/css') || []
+        cssFileNames: s => {
+            return s.files.filter(f => f.type === 'text/css').map(f => f.name) || []
         },
     },
     mutations: {

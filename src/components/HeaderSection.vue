@@ -22,8 +22,8 @@
         </div>
         <div class="status-bar">
             <div>
-                <span v-show="htmlFiles.length">HTML Files: {{htmlFiles.length}}</span>
-                <span v-show="cssFiles.length">CSS Files: {{cssFiles.length}}</span>
+                <span v-show="htmlFileNames.length">HTML Files: {{htmlFileNames.length}}</span>
+                <span v-show="cssFileNames.length">CSS Files: {{cssFileNames.length}}</span>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@
             }
         },
         computed: {
-            ...mapGetters(['files', 'htmlFiles', 'cssFiles', 'waiting', 'analyzed'])
+            ...mapGetters(['files', 'htmlFileNames', 'cssFileNames', 'waiting', 'analyzed'])
         },
         methods: {
             ...mapMutations(['addFiles', 'removeFiles']),
