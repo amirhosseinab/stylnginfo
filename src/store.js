@@ -21,6 +21,10 @@ export default new Vuex.Store({
         cssFileNames: s => {
             return s.files.filter(f => f.type === 'text/css').map(f => f.name) || []
         },
+        htmlFiles: s => {
+            if (!s.analyzedData) return [];
+            return s.analyzedData.htmlFiles;
+        }
     },
     mutations: {
         addFiles(s, p) {

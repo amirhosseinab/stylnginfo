@@ -16,8 +16,8 @@
     .status-bar {
         text-align: left;
         padding: 2px 10px;
-        border-top: solid 1px lighten($dark-gray-color, 20%);
-        background-color: lighten($dark-gray-color, 12%);
+        border-top: solid 1px $border-color;
+        background-color: $mid-gray-color;
         height: 40%;
         color: $light-gray-color;
         font-family: monospace;

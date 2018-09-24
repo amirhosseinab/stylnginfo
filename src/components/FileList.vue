@@ -13,7 +13,7 @@
 </template>
 <script>
     import {faFile, faTimes} from '@fortawesome/free-solid-svg-icons';
-    import {mapGetters,mapMutations} from 'vuex';
+    import {mapGetters, mapMutations} from 'vuex';
 
     export default {
         data() {
@@ -38,6 +38,10 @@
         margin: 0;
         padding: 0;
         text-align: left;
+        max-height: $file-list-height;
+        overflow: auto;
+        border-bottom: solid 3px $border-color;
+        @extend %scrollbar;
         .file-list-item {
             text-align: left;
             padding: 6px 10px;
@@ -56,7 +60,7 @@
                     width: 87%;
                     vertical-align: middle;
                 }
-                .html,.css{
+                .html, .css {
                     width: 5%;
                 }
                 .html {

@@ -45,4 +45,14 @@ ul {
 }
 
 
-
+%scrollbar{
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: darken($dark-gray-color, 7%);
+    }
+    &::-webkit-scrollbar-thumb {
+        background: $mid-gray-color;
+    }
+}
