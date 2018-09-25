@@ -12,7 +12,7 @@
             <div class="btn remove-files" @click="removeFiles" v-show="files.length">
                 <font-awesome-icon :icon="icons.remove" size="3x" class="icon"
                                    :class="{'disabled':waiting}"/>
-                <span>Remove All Files</span>
+                <span>Remove All</span>
             </div>
             <div class="btn analyze-files" @click="analyzeFiles" v-show="files.length">
                 <font-awesome-icon :icon="icons.analyze" size="3x" class="icon"

@@ -1,7 +1,11 @@
 <template>
     <div class="file-list-container">
         <div class="toolbar file-list">
-            <font-awesome-icon :icon="allSelected? icons.tick:icons.box" size="2x" class="toolbar toggle-selector" @click="toggleAllFiles" v-show="files.length"/>
+            <span v-show="analyzed">
+                <font-awesome-icon :icon="allSelected? icons.tick:icons.box" size="2x" class="toolbar toggle-selector"
+                                   @click="toggleAllFiles"/>
+                <span class="title">Toggle Selection</span>
+            </span>
         </div>
         <div v-show="!files.length" class="info">
             HTML & CSS files will show here
@@ -12,7 +16,7 @@
                 :class="{'html':f.file.type==='text/html','css':f.file.type==='text/css', 'permanent':analyzed}">
 
                 <font-awesome-icon :icon="f.selected?icons.tick:icons.box" size="2x" class="icon checkbox"
-                                   @click="toggleFileSelection(f)"/>
+                                   @click="toggleFileSelection(f)" v-show="analyzed"/>
 
                 <span class="file-name">{{f.file.name}}</span>
                 <font-awesome-icon :icon="icons.remove" class="icon remove" size="2x" @click="removeFile(f)"
@@ -45,7 +49,7 @@
 
         },
         methods: {
-            ...mapMutations(['removeFile', 'toggleFileSelection','toggleAllFiles'])
+            ...mapMutations(['removeFile', 'toggleFileSelection', 'toggleAllFiles'])
         }
     }
 </script>
@@ -60,12 +64,22 @@
         background-color: $mid-gray-color;
         border-top: solid 1px $border-color;
         @extend %mid-align;
-        .toolbar.toggle-selector{
+        .toolbar.toggle-selector {
             vertical-align: middle;
-            padding: 3px;
-            margin: 0 4px;
+            padding: 4px;
+            margin-left: 4px;
             cursor: pointer;
         }
+        span {
+            display: inline-block;
+            vertical-align: middle;
+            &.title {
+                padding: 2px 5px 2px 0;
+                font-size: .9em;
+                font-weight: bold;
+            }
+        }
+
     }
 
     ul.file-list {
@@ -88,11 +102,13 @@
             vertical-align: middle;
             display: inline-block;
             background-clip: padding-box;
-            border-radius: 30px 50px 50px 30px;
+            border-radius: 20px 50px 50px 20px;
             background-color: $blue-color;
+            padding-left: 4px;
             cursor: default;
             &.permanent {
-                padding-right: 5px;
+                padding-right: 10px;
+                padding-left: 0;
             }
             .icon {
                 width: 25px;
@@ -105,7 +121,7 @@
             }
             .file-name {
                 color: $light-gray-color;
-                padding: 5px;
+                padding: 4px 1px 5px 5px;
                 display: inline-block;
                 vertical-align: middle;
             }
