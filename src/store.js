@@ -14,7 +14,6 @@ export default new Vuex.Store({
         waiting: s => s.waiting,
         analyzed: s => !!s.analyzedData,
         files: s => s.files,
-        filteredFiles: s => s.filteredFiles,
         analyzedData: s => s.analyzedData,
         htmlFileNames: s => {
             return s.files.filter(f => f.type === 'text/html').map(f => f.name) || []
@@ -54,17 +53,6 @@ export default new Vuex.Store({
             if (s.waiting) return;
             s.files.splice(s.files.indexOf(p), 1);
         },
-        // selectSelectors(s, p) {
-        //     s.analyzedData.htmlFiles
-        //         .find(hf => hf.name === p.htmlFileName).cssFiles
-        //         .forEach(cf => {
-        //             cf.selectors
-        //                 .filter(s => s.name === p.selector)
-        //                 .forEach(s => {
-        //                     s.selected = !s.selected
-        //                 })
-        //         });
-        // },
         toggleFileSelection(s, p) {
             p.selected = !p.selected;
         },
@@ -87,7 +75,7 @@ export default new Vuex.Store({
 
             let formData = new FormData();
             getters.files.forEach(f => {
-                formData.append('files', f, f.name)
+                formData.append("files", f.file, f.file.name)
             });
 
             axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
