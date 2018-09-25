@@ -22,8 +22,17 @@
         </div>
         <div class="status-bar">
             <div>
-                <span v-show="htmlFileNames.length">HTML Files: {{htmlFileNames.length}}</span>
-                <span v-show="cssFileNames.length">CSS Files: {{cssFileNames.length}}</span>
+                <span v-show="htmlFiles.length">HTML Files: {{htmlFiles.length}}</span>
+                <span v-show="cssFiles.length">CSS Files: {{cssFiles.length}}</span>
+                <span class="icon" v-show="analyzed"><font-awesome-icon :icon="filter.showCssFiles ? icons.tick:icons.box" size="2x"
+                                                      class="check-icon"
+                                                      @click="filter.showCssFiles = !filter.showCssFiles"/></span>
+                <span v-show="analyzed">Show CSS Files</span>
+
+                <span class="icon" v-show="analyzed"><font-awesome-icon :icon="filter.showSelectors ? icons.tick:icons.box" size="2x"
+                                                      class="check-icon"
+                                                      @click="filter.showSelectors = !filter.showSelectors"/></span>
+                <span v-show="analyzed">Show Selectors</span>
             </div>
         </div>
     </div>
@@ -31,7 +40,7 @@
 
 <script>
     import {mapActions, mapGetters, mapMutations} from 'vuex';
-    import {faFlask, faPlus, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+    import {faFlask, faPlus, faTrashAlt, faSquare, faCheckSquare} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         data() {
@@ -40,11 +49,13 @@
                     add: faPlus,
                     remove: faTrashAlt,
                     analyze: faFlask,
+                    box: faSquare,
+                    tick: faCheckSquare,
                 }
             }
         },
         computed: {
-            ...mapGetters(['files', 'htmlFileNames', 'cssFileNames', 'waiting', 'analyzed'])
+            ...mapGetters(['files', 'htmlFiles', 'cssFiles', 'filter', 'waiting', 'analyzed'])
         },
         methods: {
             ...mapMutations(['addFiles', 'removeFiles']),
@@ -56,6 +67,12 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss">
+    .icon {
+        margin: 2px !important;
+        .check-icon {
+            padding: 3px;
+        }
+    }
 
 </style>

@@ -7,12 +7,17 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         waiting: false,
+        filter: {
+            showCssFiles: true,
+            showSelectors: true,
+        },
         files: [],
         analyzedData: null,
     },
     getters: {
         waiting: s => s.waiting,
         analyzed: s => !!s.analyzedData,
+        filter: s => s.filter,
         files: s => s.files,
         analyzedData: s => s.analyzedData,
         htmlFileNames: s => {
@@ -24,6 +29,10 @@ export default new Vuex.Store({
         htmlFiles: s => {
             if (!s.analyzedData) return [];
             return s.analyzedData.htmlFiles;
+        },
+        cssFiles: s => {
+            if (!s.analyzedData) return [];
+            return [];
         }
     },
     mutations: {
