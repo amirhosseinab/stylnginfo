@@ -8,17 +8,23 @@
     width: 100vw;
     height: $header-height;
     text-align: center;
-    padding-top: 17px;
     background-color: $dark-gray-color;
     .btn-wrapper {
         height: 60%;
+        display: inline-block;
+        &:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
     }
     .status-bar {
+        height: 40%;
         text-align: left;
         padding: 2px 10px;
         border-top: solid 1px $border-color;
         background-color: $mid-gray-color;
-        height: 40%;
         color: $light-gray-color;
         font-family: monospace;
         font-size: 1.3em;
