@@ -2,14 +2,14 @@
     <div>
         <HeaderSection/>
         <Sidebar></Sidebar>
-        <AnalyzedData v-show="files.length"></AnalyzedData>
+        <ResultPane></ResultPane>
     </div>
 </template>
 
 <script>
     import HeaderSection from '@/components/HeaderSection.vue';
     import Sidebar from '@/components/Sidebar.vue';
-    import AnalyzedData from '@/components/AnalyzedData.vue';
+    import ResultPane from '@/components/ResultPane.vue';
     import {mapGetters} from 'vuex'
 
     export default {
@@ -19,11 +19,7 @@
         components: {
             HeaderSection,
             Sidebar,
-            AnalyzedData,
+            ResultPane,
         }
     }
 </script>
-
-<style lang="scss">
-
-</style>
