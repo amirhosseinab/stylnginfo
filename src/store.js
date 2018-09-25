@@ -14,6 +14,7 @@ export default new Vuex.Store({
         waiting: s => s.waiting,
         analyzed: s => !!s.analyzedData,
         files: s => s.files,
+        filteredFiles: s => s.filteredFiles,
         analyzedData: s => s.analyzedData,
         htmlFileNames: s => {
             return s.files.filter(f => f.type === 'text/html').map(f => f.name) || []
@@ -36,7 +37,7 @@ export default new Vuex.Store({
             p.value = "";
             fileList.forEach(fl => {
                 if (!s.files.find(f => f.name === fl.name)) {
-                    s.files.push(fl);
+                    s.files.push({file: fl, selected: true});
                 }
             });
         },
@@ -53,16 +54,27 @@ export default new Vuex.Store({
             if (s.waiting) return;
             s.files.splice(s.files.indexOf(p), 1);
         },
-        selectSelectors(s, p) {
-            s.analyzedData.htmlFiles
-                .find(hf => hf.name === p.htmlFileName).cssFiles
-                .forEach(cf => {
-                    cf.selectors
-                        .filter(s => s.name === p.selector)
-                        .forEach(s => {
-                            s.selected = !s.selected
-                        })
-                });
+        // selectSelectors(s, p) {
+        //     s.analyzedData.htmlFiles
+        //         .find(hf => hf.name === p.htmlFileName).cssFiles
+        //         .forEach(cf => {
+        //             cf.selectors
+        //                 .filter(s => s.name === p.selector)
+        //                 .forEach(s => {
+        //                     s.selected = !s.selected
+        //                 })
+        //         });
+        // },
+        toggleFileSelection(s, p) {
+            p.selected = !p.selected;
+        },
+        toggleAllFiles(s) {
+
+            if (s.files.every(f => f.selected)) {
+                s.files.forEach(f => f.selected = false)
+            } else {
+                s.files.forEach(f => f.selected = true)
+            }
         },
         wait(s, p) {
             s.waiting = p;

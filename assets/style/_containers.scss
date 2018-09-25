@@ -49,7 +49,7 @@
 }
 
 .sidebar {
-    width: 20vw;
+    width: $sidebar-width;
     color: $light-gray-color;
     background-color: $dark-gray-color;
     height: calc(100vh - #{$header-height});
@@ -69,7 +69,7 @@
 }
 
 .result-pane {
-    width: 80vw;
+    width: calc (100vw  - #{$sidebar-width});
     float: left;
     overflow-y: auto;
     max-height: calc(100vh - #{$header-height});
