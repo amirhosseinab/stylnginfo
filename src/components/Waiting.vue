@@ -26,7 +26,8 @@
         color: #848bad;
         display: block;
         text-align: center;
-        margin: 50px;
+        margin: 70px;
+        @extend %mid-align;
         span {
             padding: 10px;
             display: inline-block;

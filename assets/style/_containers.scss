@@ -69,10 +69,10 @@
 }
 
 .result-pane {
-    width: calc (100vw  - #{$sidebar-width});
+    width: calc(100vw  - #{$sidebar-width});
     float: left;
     overflow-y: auto;
-    max-height: calc(100vh - #{$header-height});
+    height: calc(100vh - #{$header-height});
     .html-file {
         display: block;
         font-size: 2.5em;
