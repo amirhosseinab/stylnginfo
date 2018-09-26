@@ -28,13 +28,15 @@ export default new Vuex.Store({
         },
         htmlFiles: s => {
             if (!s.analyzedData) return [];
-            return s.analyzedData.htmlFiles;
+            return s.analyzedData.htmlFiles
+                .filter(hf => s.files
+                    .filter(f => f.selected)
+                    .map(f => f.file.name).indexOf(hf.name) !== -1);
         },
         cssFiles: s => {
             if (!s.analyzedData) return [];
             return [...(new Set(s.analyzedData.htmlFiles.reduce((acc, hf) => {
                 acc.push(...hf.cssFiles);
-                console.log(acc);
                 return acc
             }, []).map(cf => cf.name)))];
 
