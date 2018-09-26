@@ -7,63 +7,62 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         waiting: false,
-        filter: {
-            showCssFiles: true,
-            showSelectors: true,
-        },
+        // files: [{name: 'cfp-list.html', type: 'text/html'}],
         files: [],
-        analyzedData: null,
+        // graphData: {
+        //     htmlFiles: [{name: 'cfp-list.html', fileType: 0, selected: true}, {
+        //         name: 'new-route-modal.html',
+        //         fileType: 0,
+        //         selected: true
+        //     }, {name: 'select-flight-modal.html', fileType: 0, selected: true}, {
+        //         name: 'add-or-edit-route-modal.html',
+        //         fileType: 0,
+        //         selected: true
+        //     }],
+        //     cssFiles: [{name: 'app.css', fileType: 1, selected: true}, {
+        //         name: 'chat.css',
+        //         fileType: 1,
+        //         selected: true
+        //     }, {name: 'ai.css', fileType: 1, selected: true}, {
+        //         name: 'cfp.css',
+        //         fileType: 1,
+        //         selected: true
+        //     }, {name: 'flight-search.css', fileType: 1, selected: true}]
+        // },
+        graphData: null,
     },
     getters: {
         waiting: s => s.waiting,
-        analyzed: s => !!s.analyzedData,
-        filter: s => s.filter,
+        analyzed: s => !!s.graphData,
         files: s => s.files,
-        analyzedData: s => s.analyzedData,
-        htmlFileNames: s => {
-            return s.files.filter(f => f.type === 'text/html').map(f => f.name) || []
-        },
-        cssFileNames: s => {
-            return s.files.filter(f => f.type === 'text/css').map(f => f.name) || []
-        },
-        htmlFiles: s => {
-            if (!s.analyzedData) return [];
-            return s.analyzedData.htmlFiles
-                .filter(hf => s.files
-                    .filter(f => f.selected)
-                    .map(f => f.file.name).indexOf(hf.name) !== -1);
-        },
-        cssFiles: s => {
-            if (!s.analyzedData) return [];
-            return [...(new Set(s.analyzedData.htmlFiles.reduce((acc, hf) => {
-                acc.push(...hf.cssFiles);
-                return acc
-            }, []).map(cf => cf.name)))];
-
-        }
+        graphData: s => s.graphData,
+        htmlFiles: s => s.graphData ? s.graphData.htmlFiles : [],
+        cssFiles: s => s.graphData ? s.graphData.cssFiles : [],
     },
     mutations: {
-        addFiles(s, p) {
+        handleFiles(s, p) {
             if (s.waiting) return;
             let fileList = [];
             if (p.files || p.files.length) {
                 fileList.push(...p.files)
             }
             p.value = "";
-            fileList.forEach(fl => {
-                if (!s.files.find(f => f.name === fl.name)) {
-                    s.files.push({file: fl, selected: true});
+            fileList.forEach(fi => {
+                if (!s.files.find(f => f.name === fi.name)) {
+                    s.files.push(fi);
                 }
             });
         },
-        setAnalyzedData(s, p) {
-            s.analyzedData = p;
+        setGraphData(s, p) {
+            p.htmlFiles ? (p.htmlFiles.forEach(hf => hf.selected = true)) : p.htmlFiles;
+            p.cssFiles ? (p.cssFiles.forEach(cf => cf.selected = true)) : p.cssFiles;
+            s.graphData = p;
         },
-        removeFiles(s) {
+        renew(s) {
             if (s.waiting) return;
 
             s.files = [];
-            s.analyzedData = null;
+            s.graphData = null;
         },
         removeFile(s, p) {
             if (s.waiting) return;
@@ -72,12 +71,12 @@ export default new Vuex.Store({
         toggleFileSelection(s, p) {
             p.selected = !p.selected;
         },
-        toggleAllFiles(s) {
-
-            if (s.files.every(f => f.selected)) {
-                s.files.forEach(f => f.selected = false)
+        toggleAllFilesSelection(s) {
+            let allFiles = s.graphData.htmlFiles.concat(s.graphData.cssFiles);
+            if (allFiles.every(f => f.selected)) {
+                allFiles.forEach(f => f.selected = false)
             } else {
-                s.files.forEach(f => f.selected = true)
+                allFiles.forEach(f => f.selected = true)
             }
         },
         wait(s, p) {
@@ -85,18 +84,18 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        analyzeFiles({commit, getters}) {
+        analyze({commit, getters}) {
             if (getters.waiting) return;
             commit('wait', true);
 
             let formData = new FormData();
             getters.files.forEach(f => {
-                formData.append("files", f.file, f.file.name)
+                formData.append("files", f, f.name)
             });
 
             axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
                 .then(r => {
-                    commit('setAnalyzedData', r.data);
+                    commit('setGraphData', r.data);
                 })
                 .catch(e => console.log(e))
                 .finally(() => commit('wait', false));

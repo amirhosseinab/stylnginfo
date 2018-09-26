@@ -9,43 +9,14 @@
     height: $header-height;
     text-align: center;
     background-color: $dark-gray-color;
+    @extend %mid-align;
     .btn-wrapper {
-        height: 60%;
         display: inline-block;
-        &:before {
-            content: '';
-            display: inline-block;
-            height: 100%;
-            vertical-align: middle;
-        }
     }
-    .status-bar {
-        height: 40%;
-        text-align: left;
-        padding: 2px 10px;
-        border-top: solid 1px $border-color;
-        background-color: $mid-gray-color;
-        color: $light-gray-color;
-        font-family: monospace;
-        font-size: 1.3em;
-        white-space: nowrap;
-        &:before {
-            content: '';
-            display: inline-block;
-            vertical-align: middle;
-            height: 100%;
-            margin: -0.05em;
-        }
-        div {
-            display: inline-block;
-            span {
-                vertical-align: middle;
-                display: inline-block;
-                margin-right: 50px;
-                font-size: .9em;
-            }
-        }
-    }
+}
+
+.file-list-container {
+    height: 100%;
 }
 
 .sidebar {
@@ -68,8 +39,9 @@
     }
 }
 
-.result-pane {
+.main-panel {
     width: calc(100vw - #{$sidebar-width});
     overflow-y: auto;
     height: calc(100vh - #{$header-height});
+    position: relative;
 }

@@ -43,10 +43,33 @@ ul {
         clear: both;
     }
 }
+.toolbar{
+    display: block;
+    height: $toolbar-height;
+    background-color: $mid-gray-color;
+    text-align: left;
+    border-left : solid 2px $border-color;
+    padding: 5px 0;
+    @extend %mid-align;
+    .toolbar-item{
+        display: inline-block;
+        vertical-align: middle;
+        color: $light-gray-color;
+        margin-left: 4px;
+        .title {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 2px 5px 2px 0;
+            font-size: .9em;
+            font-weight: bold;
+        }
+    }
+}
 
 %scrollbar{
     &::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
+        height: 10px;
     }
     &::-webkit-scrollbar-track {
         background: darken($dark-gray-color, 7%);

@@ -1,7 +1,6 @@
 package app
 
 import (
-    "github.com/PuerkitoBio/goquery"
     "log"
     "regexp"
     "strings"
@@ -16,30 +15,35 @@ type (
     FileType int
 
     AnalyzedData struct {
-        HTMLFiles []*HTMLFile `json:"htmlFiles"`
-    }
-
-    HTMLFile struct {
-        Name     string     `json:"name"`
-        Content  string     `json:"-"`
-        CSSFiles []*CSSFile `json:"cssFiles"`
-    }
-
-    CSSFile struct {
-        Name      string      `json:"name"`
-        Content   string      `json:"-"`
-        Selectors []*Selector `json:"selectors"`
-    }
-
-    Selector struct {
-        Name     string `json:"name"`
-        Selected bool   `json:"selected"`
+        HTMLFiles           []*File     `json:"htmlFiles"`
+        CSSFiles            []*File     `json:"cssFiles"`
+        Selectors           []*Selector `json:"selectors"`
+        FileLinks           []*Link     `json:"fileLinks,omitempty"`
+        CSSToSelectorLinks  []*Link     `json:"cssToSelectorLinks,omitempty"`
+        HTMLToSelectorLinks []*Link     `json:"htmlToSelectorLinks,omitempty"`
     }
 
     File struct {
         Name     string   `json:"name"`
         Content  string   `json:"-"`
         FileType FileType `json:"fileType"`
+    }
+
+    Link struct {
+        Source string `json:"source"`
+        Target string `json:"target"`
+    }
+
+    Selector struct {
+        Name         string         `json:"name"`
+        Declarations []*Declaration `json:"declarations,omitempty"`
+        MediaQuery   string         `json:"mediaQuery,omitempty"`
+        CSSFileName  string         `json:"cssFileName"`
+    }
+
+    Declaration struct {
+        Property string `json:"property"`
+        Value    string `json:"value"`
     }
 )
 
@@ -52,55 +56,99 @@ func NewFile(name, fileType, content string) *File {
 }
 
 func AnalyzeFiles(files ...*File) *AnalyzedData {
-    result := &AnalyzedData{}
-    var cssFiles []*CSSFile
-
-    for _, f := range files {
-        if f.FileType == FileTypeCSS {
-            cf := &CSSFile{Name: f.Name, Content: f.Content, Selectors: extractSelectors(f)}
-            cssFiles = append(cssFiles, cf)
-        }
-    }
+    ad := &AnalyzedData{}
 
     for _, f := range files {
         if f.FileType == FileTypeHTML {
+            ad.HTMLFiles = append(ad.HTMLFiles, f)
+        }
+        if f.FileType == FileTypeCSS {
+            ad.CSSFiles = append(ad.CSSFiles, f)
 
-            hf := &HTMLFile{Name: f.Name, Content: f.Content}
-
-            doc, err := goquery.NewDocumentFromReader(strings.NewReader(hf.Content))
-            if err != nil {
-                log.Fatal(err)
-            }
-
-            for _, cf := range cssFiles {
-
-                var ts map[string]bool
-                ts = make(map[string]bool)
-                cssFile := &CSSFile{Name: cf.Name, Selectors: []*Selector{}}
-
-                for _, s := range cf.Selectors {
-                    doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
-                        if _, ok := ts[s.Name]; !ok {
-                            cssFile.Selectors = append(cssFile.Selectors, s)
-                            ts[s.Name] = true
-                        }
-                    })
-                }
-
-                if len(cssFile.Selectors) > 0 {
-                    hf.CSSFiles = append(hf.CSSFiles, cssFile)
-                }
-            }
-            result.HTMLFiles = append(result.HTMLFiles, hf)
+            selectors, links := ExtractSelectorsAndLinks(f)
+            ad.Selectors = append(ad.Selectors, selectors...)
+            ad.CSSToSelectorLinks = append(ad.CSSToSelectorLinks, links...)
         }
     }
-    return result
+
+    //for _, h := range ad.HTMLFiles {
+    //    var flmap, hsmap map[string]bool
+    //    flmap = make(map[string]bool)
+    //    hsmap = make(map[string]bool)
+    //
+    //    for _, s := range ad.Selectors {
+    //        doc, err := goquery.NewDocumentFromReader(strings.NewReader(h.Content))
+    //        if err != nil {
+    //            log.Fatal(err)
+    //        }
+    //        doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
+    //            if _, ok := flmap[h.Name+s.CSSFileName]; !ok {
+    //                ad.FileLinks = append(ad.FileLinks, &Link{Source: h.Name, Target: s.CSSFileName})
+    //                flmap[h.Name+s.CSSFileName] = true
+    //            }
+    //            if _, ok := hsmap[h.Name+s.Name]; !ok {
+    //                ad.HTMLToSelectorLinks = append(ad.HTMLToSelectorLinks, &Link{Source: h.Name, Target: s.Name})
+    //                hsmap[h.Name+s.Name] = true
+    //            }
+    //        })
+    //    }
+    //}
+
+    return ad
 }
 
-func extractSelectors(file *File) []*Selector {
-    var result []*Selector
-    var selectors map[string]interface{}
-    selectors = make(map[string]interface{})
+//func AnalyzeFiles(files ...*File) *AnalyzedData {
+//    result := &AnalyzedData{}
+//    var cssFiles []*CSSFile
+//
+//    for _, f := range files {
+//        if f.FileType == FileTypeCSS {
+//            cf := &CSSFile{Name: f.Name, Content: f.Content, Selectors: extractSelectors(f)}
+//            cssFiles = append(cssFiles, cf)
+//        }
+//    }
+//
+//    for _, f := range files {
+//        if f.FileType == FileTypeHTML {
+//
+//            hf := &HTMLFile{Name: f.Name, Content: f.Content}
+//
+//            doc, err := goquery.NewDocumentFromReader(strings.NewReader(hf.Content))
+//            if err != nil {
+//                log.Fatal(err)
+//            }
+//
+//            for _, cf := range cssFiles {
+//
+//                var ts map[string]bool
+//                ts = make(map[string]bool)
+//                cssFile := &CSSFile{Name: cf.Name, Selectors: []*Selector{}}
+//
+//                for _, s := range cf.Selectors {
+//                    doc.Find(s.Name).Each(func(_ int, selection *goquery.Selection) {
+//                        if _, ok := ts[s.Name]; !ok {
+//                            cssFile.Selectors = append(cssFile.Selectors, s)
+//                            ts[s.Name] = true
+//                        }
+//                    })
+//                }
+//
+//                if len(cssFile.Selectors) > 0 {
+//                    hf.CSSFiles = append(hf.CSSFiles, cssFile)
+//                }
+//            }
+//            result.HTMLFiles = append(result.HTMLFiles, hf)
+//        }
+//    }
+//    return result
+//}
+
+func ExtractSelectorsAndLinks(file *File) ([]*Selector, []*Link) {
+    var selectors []*Selector
+    var links []*Link
+
+    var smap map[string]bool
+    smap = make(map[string]bool)
 
     r, err := regexp.Compile("\\.[\\w\\-0-9\\s\\.:,\\*\\>\\(\\)]+{")
     if err != nil {
@@ -114,11 +162,12 @@ func extractSelectors(file *File) []*Selector {
         subItem := strings.Split(refinedItem, ",")
         for _, s := range subItem {
             s = strings.TrimSpace(s)
-            if _, ok := selectors[s]; !ok {
-                selectors[s] = nil
-                result = append(result, &Selector{Name: s, Selected: false})
+            if _, ok := smap[s]; !ok {
+                selectors = append(selectors, &Selector{Name: s, CSSFileName: file.Name})
+                links = append(links, &Link{Source: file.Name, Target: s})
+                smap[s] = true
             }
         }
     }
-    return result
+    return selectors, links
 }
