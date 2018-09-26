@@ -23,15 +23,20 @@
         <div class="status-bar">
             <div>
                 <span v-show="htmlFiles.length">HTML Files: {{htmlFiles.length}}</span>
-                <span v-show="cssFiles.length">CSS Files: {{cssFiles.length}}</span>
-                <span class="icon" v-show="analyzed"><font-awesome-icon :icon="filter.showCssFiles ? icons.tick:icons.box" size="2x"
-                                                      class="check-icon"
-                                                      @click="filter.showCssFiles = !filter.showCssFiles"/></span>
+                <span v-show="cssFiles.length">Used CSS Files: {{cssFiles.length}}</span>
+
+                <span class="icon" v-show="analyzed">
+                    <font-awesome-icon :icon="filter.showCssFiles ? icons.tick:icons.box" size="2x"
+                                       class="check-icon"
+                                       @click="filter.showCssFiles = !filter.showCssFiles"/>
+                </span>
                 <span v-show="analyzed">Show CSS Files</span>
 
-                <span class="icon" v-show="analyzed"><font-awesome-icon :icon="filter.showSelectors ? icons.tick:icons.box" size="2x"
-                                                      class="check-icon"
-                                                      @click="filter.showSelectors = !filter.showSelectors"/></span>
+                <span class="icon" v-show="analyzed">
+                    <font-awesome-icon :icon="filter.showSelectors ? icons.tick:icons.box" size="2x"
+                                       class="check-icon"
+                                       @click="filter.showSelectors = !filter.showSelectors"/>
+                </span>
                 <span v-show="analyzed">Show Selectors</span>
             </div>
         </div>
@@ -40,7 +45,7 @@
 
 <script>
     import {mapActions, mapGetters, mapMutations} from 'vuex';
-    import {faFlask, faPlus, faTrashAlt, faSquare, faCheckSquare} from '@fortawesome/free-solid-svg-icons';
+    import {faCheckSquare, faFlask, faPlus, faSquare, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         data() {
@@ -68,10 +73,12 @@
 </script>
 
 <style lang="scss">
-    .icon {
-        margin: 2px !important;
-        .check-icon {
-            padding: 3px;
+    .status-bar {
+        .icon {
+            margin: 2px !important;
+            .check-icon {
+                padding: 3px;
+            }
         }
     }
 

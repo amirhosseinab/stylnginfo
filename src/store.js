@@ -32,7 +32,12 @@ export default new Vuex.Store({
         },
         cssFiles: s => {
             if (!s.analyzedData) return [];
-            return [];
+            return [...(new Set(s.analyzedData.htmlFiles.reduce((acc, hf) => {
+                acc.push(...hf.cssFiles);
+                console.log(acc);
+                return acc
+            }, []).map(cf => cf.name)))];
+
         }
     },
     mutations: {

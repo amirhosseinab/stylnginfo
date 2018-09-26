@@ -43,7 +43,9 @@
         text-align: center;
         ul.data {
             margin: 0 auto 10px auto;
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             li.data-item {
                 text-align: center;
                 padding: 5px 15px;
@@ -52,7 +54,7 @@
                 font-size: 1.2em;
                 border-radius: 3px;
                 display: inline-block;
-                -webkit-column-break-after: avoid;
+                break-inside: avoid;
                 max-width: 400px;
                 vertical-align: top;
                 cursor: pointer;
