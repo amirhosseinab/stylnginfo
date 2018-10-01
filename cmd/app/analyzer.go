@@ -19,9 +19,9 @@ type (
         HTMLFiles           []*File     `json:"htmlFiles"`
         CSSFiles            []*File     `json:"cssFiles"`
         Selectors           []*Selector `json:"selectors"`
-        FileLinks           []*Link     `json:"fileLinks,omitempty"`
+        FileLinks           []*Link     `json:"fileLinks"`
         CSSToSelectorLinks  []*Link     `json:"cssToSelectorLinks,omitempty"`
-        HTMLToSelectorLinks []*Link     `json:"htmlToSelectorLinks,omitempty"`
+        HTMLToSelectorLinks []*Link     `json:"htmlToSelectorLinks"`
     }
 
     File struct {

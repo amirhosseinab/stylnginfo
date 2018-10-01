@@ -3,7 +3,15 @@
         <div class="toolbar file-list">
             <div v-show="analyzed" class="toolbar-item toggle-selector" @click="toggleAllFilesSelection">
                 <font-awesome-icon :icon="allSelected? icons.tick:icons.box" size="2x" class="toggle-selector"/>
-                <span class="title">Toggle Selection</span>
+                <span class="title">All</span>
+            </div>
+            <div v-show="analyzed" class="toolbar-item toggle-selector" @click="toggleHtmlFilesSelection">
+                <font-awesome-icon :icon="htmlSelected? icons.tick:icons.box" size="2x" class="toggle-selector"/>
+                <span class="title">HTML</span>
+            </div>
+            <div v-show="analyzed" class="toolbar-item toggle-selector" @click="toggleCssFilesSelection">
+                <font-awesome-icon :icon="cssSelected? icons.tick:icons.box" size="2x" class="toggle-selector"/>
+                <span class="title">CSS</span>
             </div>
         </div>
 
@@ -50,10 +58,16 @@
             allSelected: function () {
                 return this.htmlFiles.concat(this.cssFiles).every(f => f.selected);
             },
+            htmlSelected: function () {
+                return this.htmlFiles.every(f => f.selected);
+            },
+            cssSelected: function () {
+                return this.cssFiles.every(f => f.selected);
+            }
 
         },
         methods: {
-            ...mapMutations(['removeFile', 'toggleFileSelection', 'toggleAllFilesSelection'])
+            ...mapMutations(['removeFile', 'toggleFileSelection', 'toggleAllFilesSelection','toggleHtmlFilesSelection','toggleCssFilesSelection'])
         }
     }
 </script>

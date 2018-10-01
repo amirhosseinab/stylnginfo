@@ -7,28 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         waiting: false,
-        // files: [{name: 'cfp-list.html', type: 'text/html'}],
         files: [],
-        // graphData: {
-        //     htmlFiles: [{name: 'cfp-list.html', fileType: 0, selected: true}, {
-        //         name: 'new-route-modal.html',
-        //         fileType: 0,
-        //         selected: true
-        //     }, {name: 'select-flight-modal.html', fileType: 0, selected: true}, {
-        //         name: 'add-or-edit-route-modal.html',
-        //         fileType: 0,
-        //         selected: true
-        //     }],
-        //     cssFiles: [{name: 'app.css', fileType: 1, selected: true}, {
-        //         name: 'chat.css',
-        //         fileType: 1,
-        //         selected: true
-        //     }, {name: 'ai.css', fileType: 1, selected: true}, {
-        //         name: 'cfp.css',
-        //         fileType: 1,
-        //         selected: true
-        //     }, {name: 'flight-search.css', fileType: 1, selected: true}]
-        // },
         graphData: null,
     },
     getters: {
@@ -39,6 +18,9 @@ export default new Vuex.Store({
         htmlFiles: s => s.graphData ? s.graphData.htmlFiles : [],
         cssFiles: s => s.graphData ? s.graphData.cssFiles : [],
         fileLinks: s => s.graphData ? s.graphData.fileLinks : [],
+        selectors: s => s.graphData ? s.graphData.selectors : [],
+        htmlToSelectorLinks: s => s.graphData ? s.graphData.htmlToSelectorLinks : [],
+        cssToSelectorLinks: s => s.graphData ? s.graphData.cssToSelectorLinks : [],
     },
     mutations: {
         handleFiles(s, p) {
@@ -73,11 +55,27 @@ export default new Vuex.Store({
             p.selected = !p.selected;
         },
         toggleAllFilesSelection(s) {
-            let allFiles = s.graphData.htmlFiles.concat(s.graphData.cssFiles);
-            if (allFiles.every(f => f.selected)) {
-                allFiles.forEach(f => f.selected = false)
+            let files = s.graphData.htmlFiles.concat(s.graphData.cssFiles);
+            if (files.every(f => f.selected)) {
+                files.forEach(f => f.selected = false)
             } else {
-                allFiles.forEach(f => f.selected = true)
+                files.forEach(f => f.selected = true)
+            }
+        },
+        toggleHtmlFilesSelection(s) {
+            let files = s.graphData.htmlFiles;
+            if (files.every(f => f.selected)) {
+                files.forEach(f => f.selected = false)
+            } else {
+                files.forEach(f => f.selected = true)
+            }
+        },
+        toggleCssFilesSelection(s) {
+            let files = s.graphData.cssFiles;
+            if (files.every(f => f.selected)) {
+                files.forEach(f => f.selected = false)
+            } else {
+                files.forEach(f => f.selected = true)
             }
         },
         wait(s, p) {

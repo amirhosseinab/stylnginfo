@@ -24,12 +24,13 @@
                     width: 1100,
                     height: 750,
                     removedOpacity: .2,
-                    textRotation: -30
+                    htmlTextRotation: -30,
+                    cssTextRotation: -60,
                 },
             }
         },
         computed: {
-            ...mapGetters(['graphData', 'htmlFiles', 'cssFiles', 'fileLinks', 'analyzed']),
+            ...mapGetters(['graphData', 'htmlFiles', 'cssFiles', 'fileLinks', 'selectors', 'htmlToSelectorLinks', 'cssToSelectorLinks', 'analyzed']),
             selectedHtmlFiles() {
                 return this.htmlFiles.filter(hf => hf.selected).map(hf => hf.name);
             },
@@ -39,6 +40,23 @@
             selectedFileLinks() {
                 return this.fileLinks
                     .filter(fl => this.selectedHtmlFiles.includes(fl.source) && this.selectedCssFiles.includes(fl.target))
+            },
+            htmlSelectors() {
+                return this.selectedHtmlFiles.map(h => {
+                    return {
+                        htmlFileName: h, cssFiles: this.selectedFileLinks
+                            .filter(sf => sf.source === h)
+                            .map(sf => {
+                                return {
+                                    name: sf.target, selectorCount: this.cssToSelectorLinks
+                                        .filter(cs => cs.source === sf.target)
+                                        .filter(cs => this.htmlToSelectorLinks
+                                            .find(hs => hs.source === h && hs.target === cs.target))
+                                        .length
+                                }
+                            })
+                    }
+                });
             }
         },
         watch: {
@@ -52,7 +70,13 @@
         methods: {
             renderGraph() {
                 let v = d3.select("#viewer");
-                let margin = {top: 30, right: 30, bottom: 120, left: 200};
+                let margin = {top: 30, right: 30, bottom: 180, left: 200};
+
+                let maxRadiusDomain = Math.max(...this.htmlSelectors
+                    .map(hs => hs.cssFiles
+                        .map(cf => cf.selectorCount)
+                        .reduce((a, b) => Math.max(a, b))));
+
 
                 let xScale = d3.scaleBand()
                         .domain(this.selectedCssFiles)
@@ -63,7 +87,10 @@
                         .domain(this.selectedHtmlFiles)
                         .range([margin.top, this.settings.height - margin.bottom])
                         .paddingInner(1)
-                        .paddingOuter(.8);
+                        .paddingOuter(.8),
+                    rScale = d3.scaleLinear()
+                        .domain([0, maxRadiusDomain])
+                        .range([5, 40]);
 
                 let graph = v.select("g.graph");
 
@@ -82,7 +109,7 @@
                     .attr("x", margin.left - 5)
                     .attr("y", d => yScale(d))
                     .attr("dy", "0.2em")
-                    .attr("transform", d => "rotate(" + this.settings.textRotation + " " + (margin.left - 5) + " " + yScale(d) + ")")
+                    .attr("transform", d => "rotate(" + this.settings.htmlTextRotation + " " + (margin.left - 5) + " " + yScale(d) + ")")
                     .attr("class", "text html");
                 htmlTick.append("line")
                     .attr("class", "line html")
@@ -107,9 +134,9 @@
                     .attr("text-anchor", "end")
                     .attr("x", d => xScale(d))
                     .attr("y", this.settings.height - margin.bottom)
-                    .attr("dy", "0.5em")
-                    .attr("dx", "-0.3em")
-                    .attr("transform", d => "rotate(" + this.settings.textRotation + " " + xScale(d) + " " + (this.settings.height - margin.bottom) + ")")
+                    .attr("dy", "0.3em")
+                    .attr("dx", "-0.2em")
+                    .attr("transform", d => "rotate(" + this.settings.cssTextRotation + " " + xScale(d) + " " + (this.settings.height - margin.bottom) + ")")
                     .attr("class", "text css");
                 cssTick.append("line")
                     .attr("class", "line css")
@@ -128,7 +155,11 @@
                 fileLinksData.enter()
                     .append("circle")
                     .attr("class", "file-link")
-                    .attr("r", 8)
+                    .attr("r", d => {
+                        let sc = this.htmlSelectors.find(hs => hs.htmlFileName === d.source)
+                            .cssFiles.find(cf => cf.name === d.target).selectorCount
+                        return rScale(sc)
+                    })
                     .attr("cx", d => xScale(d.target))
                     .attr("cy", d => yScale(d.source));
 
@@ -161,18 +192,24 @@
                 text {
                     &.html {
                         fill: $blue-color;
-                        font-size: 1em;
+                        font-size: 0.9em;
+                        font-weight: bold;
                     }
                     &.css {
                         fill: $green-color;
-                        font-size: 1.2em;
+                        font-size: 1em;
+                        font-weight: bold;
                     }
                 }
                 circle {
                     &.file-link {
-                        fill: $orange-color;
-                        stroke: $graph-gray-color;
-                        stroke-width: 1px;
+                        fill: $graph-selector-dot-color;
+                        fill-opacity: .7;
+                        cursor: default;
+                        &:hover {
+                            fill-opacity: 1;
+                            border: solid 2px $graph-gray-color;
+                        }
                     }
                 }
             }
