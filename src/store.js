@@ -38,6 +38,7 @@ export default new Vuex.Store({
         graphData: s => s.graphData,
         htmlFiles: s => s.graphData ? s.graphData.htmlFiles : [],
         cssFiles: s => s.graphData ? s.graphData.cssFiles : [],
+        fileLinks: s => s.graphData ? s.graphData.fileLinks : [],
     },
     mutations: {
         handleFiles(s, p) {

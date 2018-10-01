@@ -29,12 +29,16 @@
             }
         },
         computed: {
-            ...mapGetters(['graphData', 'htmlFiles', 'cssFiles', 'analyzed']),
+            ...mapGetters(['graphData', 'htmlFiles', 'cssFiles', 'fileLinks', 'analyzed']),
             selectedHtmlFiles() {
                 return this.htmlFiles.filter(hf => hf.selected).map(hf => hf.name);
             },
             selectedCssFiles() {
                 return this.cssFiles.filter(cf => cf.selected).map(cf => cf.name);
+            },
+            selectedFileLinks() {
+                return this.fileLinks
+                    .filter(fl => this.selectedHtmlFiles.includes(fl.source) && this.selectedCssFiles.includes(fl.target))
             }
         },
         watch: {
@@ -115,6 +119,21 @@
                     .attr("y2", this.settings.height - margin.bottom);
 
                 cssTickGroupData.attr("opacity", null);
+
+                // FILE LINKS
+                let fileLinksData = graph.selectAll("circle.file-link").data(this.selectedFileLinks, d => d.source + d.target);
+                fileLinksData.exit()
+                    .attr("opacity", this.settings.removedOpacity);
+
+                fileLinksData.enter()
+                    .append("circle")
+                    .attr("class", "file-link")
+                    .attr("r", 8)
+                    .attr("cx", d => xScale(d.target))
+                    .attr("cy", d => yScale(d.source));
+
+                fileLinksData.attr("opacity", null);
+
             }
         },
         mounted() {
@@ -136,7 +155,7 @@
                 vertical-align: middle;
                 line.html, line.css {
                     fill: none;
-                    stroke: #dfdfdf;
+                    stroke: $graph-gray-color;
                     stroke-width: 2;
                 }
                 text {
@@ -147,6 +166,13 @@
                     &.css {
                         fill: $green-color;
                         font-size: 1.2em;
+                    }
+                }
+                circle {
+                    &.file-link {
+                        fill: $orange-color;
+                        stroke: $graph-gray-color;
+                        stroke-width: 1px;
                     }
                 }
             }
