@@ -4,9 +4,11 @@ import (
     "github.com/amirhosseinab/stylnginfo/cmd/app"
     "github.com/gorilla/mux"
     "html/template"
+    "log"
     "net/http"
     "os"
     "path"
+    "time"
 )
 
 func main() {
@@ -21,7 +23,15 @@ func main() {
 
     r.NotFoundHandler = http.HandlerFunc(IndexHandler)
 
-    http.ListenAndServe(":"+port, r)
+    srv := &http.Server{
+        Handler:      r,
+        Addr:         ":" + port,
+        WriteTimeout: 60 * time.Second,
+        ReadTimeout:  60 * time.Second,
+    }
+
+    log.Fatal(srv.ListenAndServe())
+
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
