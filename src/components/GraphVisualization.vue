@@ -88,9 +88,22 @@
                         .range([margin.top, this.settings.height - margin.bottom])
                         .paddingInner(1)
                         .paddingOuter(.8),
-                    rScale = d3.scaleLinear()
+                    wScale = d3.scaleBand()
+                        .domain(this.selectedCssFiles.length > this.selectedHtmlFiles.length ?
+                            this.selectedCssFiles : this.selectedHtmlFiles)
+                        .range([margin.left, this.settings.width - margin.right])
+                        .paddingInner(.4)
+                        .paddingOuter(.2),
+
+                    cScale = d3.scaleLinear()
                         .domain([0, maxRadiusDomain])
-                        .range([5, 40]);
+                        .range(["#CF9BFF", "#ff0a7c"]),
+                    // cScale = d3.scaleQuantize()
+                    //     .domain([0, maxRadiusDomain])
+                    //     .range(["#ff0a7c","#60d440","#E2B257","#ec7f2a","#ff0a7c"]),
+                    rScale = d3.scaleSqrt()
+                        .domain([0, maxRadiusDomain])
+                        .range([5, wScale.bandwidth()]);
 
                 let graph = v.select("g.graph");
 
@@ -157,8 +170,13 @@
                     .attr("class", "file-link")
                     .attr("r", d => {
                         let sc = this.htmlSelectors.find(hs => hs.htmlFileName === d.source)
-                            .cssFiles.find(cf => cf.name === d.target).selectorCount
+                            .cssFiles.find(cf => cf.name === d.target).selectorCount;
                         return rScale(sc)
+                    })
+                    .attr("fill", d => {
+                        let sc = this.htmlSelectors.find(hs => hs.htmlFileName === d.source)
+                            .cssFiles.find(cf => cf.name === d.target).selectorCount;
+                        return cScale(sc)
                     })
                     .attr("cx", d => xScale(d.target))
                     .attr("cy", d => yScale(d.source));
@@ -203,7 +221,7 @@
                 }
                 circle {
                     &.file-link {
-                        fill: $graph-selector-dot-color;
+                        //fill: $graph-selector-dot-color;
                         fill-opacity: .7;
                         cursor: default;
                         &:hover {
