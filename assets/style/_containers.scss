@@ -23,7 +23,7 @@
     width: $sidebar-width;
     color: $light-gray-color;
     background-color: $dark-gray-color;
-    height: calc(100vh - #{$header-height});
+    height: calc(100vh - #{$header-height} - #{$footer-height});
     overflow: auto;
     display: block;
     float: left;
@@ -42,6 +42,6 @@
 .main-panel {
     width: calc(100vw - #{$sidebar-width});
     overflow-y: auto;
-    height: calc(100vh - #{$header-height});
+    height: calc(100vh - #{$header-height} - #{$footer-height});
     position: relative;
 }

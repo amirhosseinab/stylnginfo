@@ -11,6 +11,30 @@ body, html {
     background-color: $light-gray-color;
 }
 
+footer {
+    display: block;
+    height: $footer-height;
+    background-color: $dark-gray-color;
+    text-align: center;
+    color: $light-gray-color;
+    @extend %mid-align;
+    span {
+        font-family: monospace;
+        display: inline-block;
+        font-size: 1.1em;
+        .heart {
+            color: $red-color;
+        }
+        a {
+            color: $light-gray-color;
+            text-decoration: none;
+            display: inline-block;
+            border-bottom: solid 1px $light-gray-color;
+            padding-bottom: 1px;
+        }
+    }
+}
+
 h1 {
     font-size: 1.4em;
     margin: 30px 10px 20px;
@@ -43,15 +67,16 @@ ul {
         clear: both;
     }
 }
-.toolbar{
+
+.toolbar {
     display: block;
     height: $toolbar-height;
     background-color: $mid-gray-color;
     text-align: left;
-    border-left : solid 2px $border-color;
+    border-left: solid 2px $border-color;
     padding: 5px 0;
     @extend %mid-align;
-    .toolbar-item{
+    .toolbar-item {
         display: inline-block;
         vertical-align: middle;
         color: $light-gray-color;
@@ -66,7 +91,7 @@ ul {
     }
 }
 
-%scrollbar{
+%scrollbar {
     &::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -79,7 +104,7 @@ ul {
     }
 }
 
-%mid-align{
+%mid-align {
     &:before {
         content: '';
         display: inline-block;

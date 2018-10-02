@@ -3,6 +3,13 @@
         <HeaderSection/>
         <Sidebar></Sidebar>
         <ResultPane></ResultPane>
+        <footer>
+            <span>
+                made with <span class="heart">&hearts;</span> by <a href="https://github.com/amirhosseinab"
+                                                                    title="Amir Hossein Abdolkhalegh"
+                                                                    target="_blank">@amirhosseianb</a>
+            </span>
+        </footer>
     </div>
 </template>
 
