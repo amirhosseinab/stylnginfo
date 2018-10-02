@@ -17,10 +17,6 @@ export default new Vuex.Store({
         graphData: s => s.graphData,
         htmlFiles: s => s.graphData ? s.graphData.htmlFiles : [],
         cssFiles: s => s.graphData ? s.graphData.cssFiles : [],
-        fileLinks: s => s.graphData ? s.graphData.fileLinks : [],
-        selectors: s => s.graphData ? s.graphData.selectors : [],
-        htmlToSelectorLinks: s => s.graphData ? s.graphData.htmlToSelectorLinks : [],
-        cssToSelectorLinks: s => s.graphData ? s.graphData.cssToSelectorLinks : [],
     },
     mutations: {
         handleFiles(s, p) {

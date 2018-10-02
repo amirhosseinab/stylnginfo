@@ -14,7 +14,7 @@ func UploadFilesHandler(w http.ResponseWriter, r *http.Request) {
     var fs []*File
 
     for _, file := range files {
-        fs = append(fs, NewFile(getFileInfo(file)))
+        fs = append(fs, NewFile(GetFileInfo(file)))
     }
 
     result := AnalyzeFiles(fs...)
@@ -28,7 +28,7 @@ func UploadFilesHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(b)
 }
 
-func getFileInfo(file *multipart.FileHeader) (fileName, fileType, content string) {
+func GetFileInfo(file *multipart.FileHeader) (fileName, fileType, content string) {
     f, err := file.Open()
     if err != nil {
         log.Fatal(err)
@@ -41,4 +41,12 @@ func getFileInfo(file *multipart.FileHeader) (fileName, fileType, content string
         log.Fatal(err)
     }
     return fileName, fileType, string(b)
+}
+
+func NewFile(name, fileType, content string) *File {
+   types := map[string]FileType{
+       "text/html": FileTypeHTML,
+       "text/css":  FileTypeCSS,
+   }
+   return &File{Name: name, Content: content, FileType: types[fileType]}
 }

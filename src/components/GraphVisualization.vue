@@ -30,7 +30,7 @@
             }
         },
         computed: {
-            ...mapGetters(['graphData', 'htmlFiles', 'cssFiles', 'fileLinks', 'selectors', 'htmlToSelectorLinks', 'cssToSelectorLinks', 'analyzed']),
+            ...mapGetters(['htmlFiles', 'cssFiles', 'analyzed']),
             selectedHtmlFiles() {
                 return this.htmlFiles.filter(hf => hf.selected).map(hf => hf.name);
             },
@@ -38,25 +38,24 @@
                 return this.cssFiles.filter(cf => cf.selected).map(cf => cf.name);
             },
             selectedFileLinks() {
-                return this.fileLinks
-                    .filter(fl => this.selectedHtmlFiles.includes(fl.source) && this.selectedCssFiles.includes(fl.target))
+                return this.htmlFiles.filter(hf => this.selectedHtmlFiles.includes(hf.name))
+                    .reduce((links, hf) => {
+                        links.push(...hf.cssFiles.filter(cf => this.selectedCssFiles.includes(cf.name))
+                            .map(cf => {
+                                return {source: hf.name, target: cf.name}
+                            }));
+                        return links;
+                    }, []);
             },
             htmlSelectors() {
-                return this.selectedHtmlFiles.map(h => {
-                    return {
-                        htmlFileName: h, cssFiles: this.selectedFileLinks
-                            .filter(sf => sf.source === h)
-                            .map(sf => {
-                                return {
-                                    name: sf.target, selectorCount: this.cssToSelectorLinks
-                                        .filter(cs => cs.source === sf.target)
-                                        .filter(cs => this.htmlToSelectorLinks
-                                            .find(hs => hs.source === h && hs.target === cs.target))
-                                        .length
-                                }
+                return this.htmlFiles.filter(hf => this.selectedHtmlFiles.includes(hf.name))
+                    .map(hf => {
+                        return {
+                            htmlFileName: hf.name, cssFiles: hf.cssFiles.map(cf => {
+                                return {name: cf.name, selectorCount: cf.selectors.length}
                             })
-                    }
-                });
+                        }
+                    });
             }
         },
         watch: {
