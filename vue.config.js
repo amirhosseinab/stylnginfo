@@ -5,7 +5,8 @@ module.exports = {
     css: {
         loaderOptions: {
             sass: {
-                data: '@import "assets/style/main";'
+                includePaths: [path.resolve(__dirname, "node_modules/normalize-scss/sass")],
+                data: '@import "assets/style/main";',
             }
         }
     },

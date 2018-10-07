@@ -1,13 +1,12 @@
 $page-width: 100vw;
-$header-height: 80px;
-$footer-height: 50px;
+$header-height: 6rem;
 
-$main-min-height: calc(100vh - #{$header-height});
-$sidebar-width: 25vw;
-$toolbar-height: 40px;
-
+$toolbox-top: $header-height + 1rem;
+$toolbox-height: 5rem;
+$toolbox-width: 25rem;
+$toolbox-body-height: 34rem;
 $base-font-family: Arial;
-$base-font-size: .9rem;
+$base-font-size: 1rem;
 
 $dark-gray-color: #454545;
 $mid-gray-color: lighten($dark-gray-color, 12%);

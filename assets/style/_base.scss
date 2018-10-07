@@ -15,6 +15,32 @@ body {
     padding-top: $header-height;
 }
 
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: $header-height;
+    background-color: $dark-gray-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    h1, h2 {
+        font-family: monospace;
+        font-weight: normal;
+        margin: .2rem;
+    }
+    h1 {
+        font-size: 2rem;
+        letter-spacing: .35rem;
+    }
+    h2 {
+        font-size: .9rem;
+        word-spacing: -.1rem;
+    }
+}
+
 input {
     line-height: 2em;
     border: solid 1px $white-color;
