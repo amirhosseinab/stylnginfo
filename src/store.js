@@ -6,12 +6,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        waiting: false,
         files: [],
         graphData: null,
     },
     getters: {
-        waiting: s => s.waiting,
         analyzed: s => !!s.graphData,
         files: s => s.files,
         graphData: s => s.graphData,
@@ -73,9 +71,6 @@ export default new Vuex.Store({
             } else {
                 files.forEach(f => f.selected = true)
             }
-        },
-        wait(s, p) {
-            s.waiting = p;
         },
     },
     actions: {

@@ -5,46 +5,19 @@
 body, html {
     margin: 0;
     padding: 0;
-    color: $dark-gray-color;
+    color: $white-color;
     font-family: $base-font-family;
     font-size: $base-font-size;
-    background-color: $light-gray-color;
+    background-color: $white-color;
 }
 
-footer {
-    display: block;
-    height: $footer-height;
-    background-color: $dark-gray-color;
-    text-align: center;
-    color: $light-gray-color;
-    @extend %mid-align;
-    span {
-        font-family: monospace;
-        display: inline-block;
-        font-size: 1.1em;
-        .heart {
-            color: $red-color;
-        }
-        a {
-            color: $light-gray-color;
-            text-decoration: none;
-            display: inline-block;
-            border-bottom: solid 1px $light-gray-color;
-            padding-bottom: 1px;
-        }
-    }
-}
-
-h1 {
-    font-size: 1.4em;
-    margin: 30px 10px 20px;
-    font-weight: normal;
-    color: #777;
+body {
+    padding-top: $header-height;
 }
 
 input {
     line-height: 2em;
-    border: solid 1px $light-gray-color;
+    border: solid 1px $white-color;
     border-radius: 5px;
     margin: 5px;
     padding: 2px 5px;
@@ -55,60 +28,15 @@ input[type='file'] {
     display: none;
 }
 
-ul {
-    padding: 0;
-    list-style-type: none;
-}
-
-.clear-fix {
-    &:after {
-        content: '';
-        display: table;
-        clear: both;
-    }
-}
-
-.toolbar {
-    display: block;
-    height: $toolbar-height;
-    background-color: $mid-gray-color;
-    text-align: left;
-    border-left: solid 2px $border-color;
-    padding: 5px 0;
-    @extend %mid-align;
-    .toolbar-item {
-        display: inline-block;
-        vertical-align: middle;
-        color: $light-gray-color;
-        margin-left: 4px;
-        .title {
-            display: inline-block;
-            vertical-align: middle;
-            padding: 2px 5px 2px 0;
-            font-size: .9em;
-            font-weight: bold;
-        }
-    }
-}
-
 %scrollbar {
     &::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }
     &::-webkit-scrollbar-track {
         background: darken($dark-gray-color, 7%);
     }
     &::-webkit-scrollbar-thumb {
         background: $mid-gray-color;
-    }
-}
-
-%mid-align {
-    &:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
     }
 }

@@ -1,15 +1,17 @@
 $page-width: 100vw;
 $header-height: 80px;
+$footer-height: 50px;
+
+$main-min-height: calc(100vh - #{$header-height});
 $sidebar-width: 25vw;
 $toolbar-height: 40px;
-$footer-height: 30px;
 
 $base-font-family: Arial;
-$base-font-size: 0.9em;
+$base-font-size: .9rem;
 
-$light-gray-color: #ececec;
 $dark-gray-color: #454545;
 $mid-gray-color: lighten($dark-gray-color, 12%);
+$white-color: #ececec;
 $blue-color: #51a1f5;
 $green-color: #37be31;
 $red-color: #c5074f;
