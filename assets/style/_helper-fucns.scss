@@ -1,0 +1,15 @@
+@mixin random-light-color {
+    $c: 8;
+    @for $i from 1 through $c {
+        @for $j from 1 through 2 {
+            &:nth-child(#{$i}) {
+                $hue: $i * 40;
+                background-color: hsl($hue, 100%, 72%);
+            }
+            &:nth-child(#{($i * $j) + $c }) {
+                $hue: $i * 30;
+                background-color: hsl($hue, 80%, 80%);
+            }
+        }
+    }
+}

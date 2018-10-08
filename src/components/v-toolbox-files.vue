@@ -14,10 +14,27 @@
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeIndexFile"/>
             </div>
         </div>
+        <div class="module-list" v-if="modules.length">
+            <div v-for="(module,index) in modules" :key="index" class="module-item"
+                 :class="{'edit-mode':module.editMode}"
+                 :style="{backgroundColor:module.color}">
 
+                <div v-if="!module.editMode" class="module-text" @click="module.editMode=true">{{module.name}}</div>
+                <input v-else v-model="module.name" @focus="$event.target.select()" autofocus
+                       @keypress.enter="updateModule(module)" type="text" class="module-text-edit"
+                       placeholder="Module Name">
+
+                <font-awesome-icon v-if="!module.editMode" class="remove-button" :icon="icons.remove"
+                                   @click="removeModule(module)"/>
+                <font-awesome-icon v-else class="accept-button" :icon="icons.accept"
+                                   @click="updateModule(module)"/>
+            </div>
+        </div>
         <div class="file-list">
             <div class="info" v-if="!selectedFiles.length">HTML & CSS Files will be Shown Here</div>
-            <div v-for="file in htmlFiles" :key="file.name" class="file-item html file-name">
+            <div v-for="file in htmlFiles" :key="file.name" class="file-item html file-name"
+                 :class="{'has-module':file.module==='cfp'}">
+                <div class="module-indicator" :style="{backgroundColor: file.module.color}"></div>
                 <div>{{file.name}}</div>
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
             </div>
@@ -33,7 +50,7 @@
     import {mapGetters, mapMutations} from 'vuex';
 
     import vButton from "@/components/v-button.vue";
-    import {faFileAlt, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons"
+    import {faCheck, faFileAlt, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons"
 
     export default {
         name: "v-toolbox-files",
@@ -43,14 +60,15 @@
                     addFiles: faPlus,
                     addIndexFile: faFileAlt,
                     remove: faTimes,
-                }
+                    accept: faCheck,
+                },
             }
         },
         components: {
             vButton,
         },
         computed: {
-            ...mapGetters(['selectedFiles', 'indexFile']),
+            ...mapGetters(['selectedFiles', 'indexFile', 'modules']),
 
             htmlFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/html")
@@ -60,40 +78,52 @@
             },
         },
         methods: {
-            ...mapMutations(['addSelectedFiles', 'addIndexFile', 'removeIndexFile', 'removeFile', 'removeAllFiles']),
+            ...mapMutations(['addSelectedFiles', 'addIndexFile', 'removeIndexFile', 'removeFile', 'removeAllFiles', 'addModule', 'removeModule']),
             selectFiles() {
                 this.$refs.filesInput.click()
             },
             selectIndexFile() {
                 this.$refs.indexFileInput.click()
             },
+            updateModule(module) {
+                if (module.name !== "") {
+                    module.editMode = false;
+                }
+            }
         }
     }
 </script>
 
 <style scoped lang="scss">
     $file-list-background-color: lighten($mid-gray-color, 2%);
-    $body-content: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
     $button-group-height: 3.5rem;
+    $module-list-height: 3.6rem;
+    $body-content-height: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
     .file-list-pane {
         display: flex;
         flex-flow: column wrap;
+        align-items: stretch;
+        justify-content: flex-start;
         position: relative;
         z-index: 99;
+
     }
 
     .btn-group {
+        flex: 0 1 $button-group-height;
         display: flex;
+        flex-flow: row wrap;
         justify-content: space-between;
         align-items: center;
         padding: .5rem;
-        max-height: $button-group-height;
+        //max-height: $button-group-height;
 
         .btn-add-files, .btn-remove-files {
-            min-width: 6.5rem;
+            flex: 0 1 6.5rem;
         }
 
         .index-file {
+            flex: 0 1 9rem;
             background-color: $dark-gray-color;
             padding: .5rem 1rem;
             border-radius: 8px;
@@ -104,8 +134,61 @@
         }
     }
 
+    .module-list {
+        flex: 0 1 $module-list-height;
+        max-height: min-content;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: auto;
+        padding: .4rem .2rem;
+        background-color: darken($file-list-background-color, 14%);
+        @extend %scrollbar;
+        .module-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .2rem .5rem .35rem;
+            margin: .1rem;
+            font-size: .7rem;
+            border-radius: 10px;
+            color: $dark-gray-color;
+            &.edit-mode {
+                border-radius: 5px;
+                padding: 0 .5rem .15rem .2rem;
+
+            }
+            .module-text {
+                color: $dark-gray-color;
+                transform: translateY(.05rem);
+                &:hover {
+                    cursor: pointer;
+                    color: $white-color;
+                }
+            }
+            .module-text-edit {
+                outline: none;
+                line-height: .5rem;
+                height: 1.05rem;
+                margin: .1rem 0 0;
+                border-radius: 5px;
+                max-width: 5rem;
+                background-color: transparent;
+                //border: solid 1px lighten($mid-gray-color, 5%);
+                border: none;
+            }
+            .remove-button {
+                color: $dark-gray-color;
+                transform: translateY(.07rem);
+                margin-left: .3rem;
+            }
+        }
+    }
+
     .file-list {
-        flex-grow: 1;
+        flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height});
+        overflow: auto;
 
         display: flex;
         flex-flow: row wrap;
@@ -114,10 +197,7 @@
         align-content: flex-start;
 
         padding: .3rem .2rem;
-        overflow: auto;
         background-color: $file-list-background-color;
-        height: auto;
-        max-height: calc(#{$body-content} - #{$button-group-height});
 
         @extend %scrollbar;
         .file-item {
@@ -136,6 +216,15 @@
             &.css {
                 color: $green-color;
             }
+            &.has-module {
+                //background-color: $graph-selector-dot-color;
+            }
+            .module-indicator {
+                height: .5rem;
+                width: .5rem;
+                border-radius: 100%;
+                margin-right: .3rem;
+            }
         }
     }
 
@@ -144,6 +233,14 @@
         margin-left: .6rem;
         padding: .01rem;
         color: $light-red-color;
+    }
+
+    .accept-button {
+        cursor: pointer;
+        margin-left: .3rem;
+        padding: .01rem;
+        transform: translateY(.1rem);
+        color: $dark-gray-color;
     }
 
     .info {

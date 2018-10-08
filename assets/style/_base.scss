@@ -90,9 +90,9 @@ input[type='file'] {
         height: 8px;
     }
     &::-webkit-scrollbar-track {
-        background: $mid-gray-color;
+        background: darken($dark-gray-color, 10%);
     }
     &::-webkit-scrollbar-thumb {
-        background: darken($dark-gray-color, 5%);
+        background: lighten( $mid-gray-color,15%);
     }
 }
