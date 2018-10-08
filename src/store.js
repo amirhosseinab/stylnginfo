@@ -6,71 +6,41 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        files: [],
-        graphData: null,
+        selectedFiles: [],
+        indexFile: null,
     },
     getters: {
-        analyzed: s => !!s.graphData,
-        files: s => s.files,
-        graphData: s => s.graphData,
-        htmlFiles: s => s.graphData ? s.graphData.htmlFiles : [],
-        cssFiles: s => s.graphData ? s.graphData.cssFiles : [],
+        selectedFiles: s => s.selectedFiles,
+        indexFile: s => s.indexFile,
     },
     mutations: {
-        handleFiles(s, p) {
-            if (s.waiting) return;
+        addSelectedFiles(s, fs) {
             let fileList = [];
-            if (p.files || p.files.length) {
-                fileList.push(...p.files)
+            if (fs.files || fs.files.length) {
+                fileList.push(...fs.files)
             }
-            p.value = "";
+            fs.value = "";
             fileList.forEach(fi => {
-                if (!s.files.find(f => f.name === fi.name)) {
-                    s.files.push(fi);
+                if (!s.selectedFiles.find(f => f.name === fi.name)) {
+                    s.selectedFiles.push(fi);
                 }
             });
         },
-        setGraphData(s, p) {
-            p.htmlFiles ? (p.htmlFiles.forEach(hf => hf.selected = true)) : p.htmlFiles;
-            p.cssFiles ? (p.cssFiles.forEach(cf => cf.selected = true)) : p.cssFiles;
-            s.graphData = p;
-        },
-        renew(s) {
-            if (s.waiting) return;
-
-            s.files = [];
-            s.graphData = null;
-        },
-        removeFile(s, p) {
-            if (s.waiting) return;
-            s.files.splice(s.files.indexOf(p), 1);
-        },
-        toggleFileSelection(s, p) {
-            p.selected = !p.selected;
-        },
-        toggleAllFilesSelection(s) {
-            let files = s.graphData.htmlFiles.concat(s.graphData.cssFiles);
-            if (files.every(f => f.selected)) {
-                files.forEach(f => f.selected = false)
-            } else {
-                files.forEach(f => f.selected = true)
+        addIndexFile(s, fs) {
+            if (fs.files || fs.files.length) {
+                s.indexFile = fs.files[0]
             }
+            fs.value = "";
         },
-        toggleHtmlFilesSelection(s) {
-            let files = s.graphData.htmlFiles;
-            if (files.every(f => f.selected)) {
-                files.forEach(f => f.selected = false)
-            } else {
-                files.forEach(f => f.selected = true)
-            }
+        removeIndexFile(s) {
+            s.indexFile = null
         },
-        toggleCssFilesSelection(s) {
-            let files = s.graphData.cssFiles;
-            if (files.every(f => f.selected)) {
-                files.forEach(f => f.selected = false)
-            } else {
-                files.forEach(f => f.selected = true)
-            }
+        removeFile(s,file) {
+            s.selectedFiles.splice(s.selectedFiles.indexOf(file), 1)
+        },
+        removeAllFiles(s) {
+            s.selectedFiles = [];
+            s.indexFile = null;
         },
     },
     actions: {

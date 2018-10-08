@@ -54,15 +54,20 @@ input[type='file'] {
     display: none;
 }
 
+.file-name {
+    font-family: monospace;
+    font-size: .9rem;
+}
+
 %scrollbar {
     &::-webkit-scrollbar {
         width: 8px;
         height: 8px;
     }
     &::-webkit-scrollbar-track {
-        background: darken($dark-gray-color, 7%);
+        background: $mid-gray-color;
     }
     &::-webkit-scrollbar-thumb {
-        background: $mid-gray-color;
+        background: darken($dark-gray-color, 5%);
     }
 }

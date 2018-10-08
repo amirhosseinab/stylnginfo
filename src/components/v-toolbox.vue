@@ -23,8 +23,8 @@
 
 <script>
     import {
-        faAngleDoubleRight,
         faAngleDoubleLeft,
+        faAngleDoubleRight,
         faChartBar,
         faFileCode,
         faFilter,
@@ -51,6 +51,7 @@
                 arrowLeftIcon: faAngleDoubleLeft,
             }
         },
+
         methods: {
             toggleToolbox() {
                 this.showToolbox = !this.showToolbox;
@@ -126,17 +127,15 @@
         left: 0;
         top: $toolbox-top + $toolbox-height;
         background-color: lighten($dark-gray-color, 9%);
-        border: solid 8px $dark-gray-color;
+        border: solid $toolbox-body-border-bottom-width $dark-gray-color;
         border-left: 0;
         border-top: 0;
-        padding: .5rem;
+        padding: 0;
         width: $toolbox-width;
-        min-height: 0;
+        max-width: $toolbox-width;
+        max-height: $toolbox-body-height;
         border-radius: 0 0 8px 0;
         font-size: .9rem;
-
-        transition: max-height .5s cubic-bezier(0.25, 0.58, 0.70, 0.96);
-
         &.expanded {
             min-height: $toolbox-body-height;
         }
