@@ -1,5 +1,5 @@
 <template>
-    <div class="file-list-panel">
+    <div class="file-list-pane">
         <input type="file" ref="filesInput" @change="addSelectedFiles($refs.filesInput)" multiple
                accept="text/css, text/html"/>
         <input type="file" ref="indexFileInput" @change="addIndexFile($refs.indexFileInput)" accept="text/html"/>
@@ -75,10 +75,11 @@
     $file-list-background-color: lighten($mid-gray-color, 2%);
     $body-content: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
     $button-group-height: 3.5rem;
-    .file-list-panel {
+    .file-list-pane {
         display: flex;
         flex-flow: column wrap;
         position: relative;
+        z-index: 99;
     }
 
     .btn-group {

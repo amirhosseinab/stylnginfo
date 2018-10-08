@@ -80,7 +80,7 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
-
+        z-index: 99;
         &.expanded {
             border-radius: 0 8px 0 0;
         }
@@ -136,6 +136,7 @@
         max-height: $toolbox-body-height;
         border-radius: 0 0 8px 0;
         font-size: .9rem;
+         z-index: 99;
         &.expanded {
             min-height: $toolbox-body-height;
         }
