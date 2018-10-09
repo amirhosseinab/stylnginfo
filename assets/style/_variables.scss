@@ -1,3 +1,5 @@
+$sm__height-limit: 800px;
+
 $page-width: 100vw;
 $header-height: 6rem;
 $footer-height: 4rem;
@@ -5,7 +7,10 @@ $footer-height: 4rem;
 $toolbox-top: $header-height + 1rem;
 $toolbox-height: 5rem;
 $toolbox-width: 25rem;
-$toolbox-body-height: 34rem;
+
+$toolbox-body-height: 38rem;
+$toolbox-body-height__sm: 30rem;
+
 $toolbox-body-border-bottom-width: 8px;
 
 $base-font-family: Arial;
@@ -15,7 +20,7 @@ $dark-gray-color: #454545;
 $mid-gray-color: lighten($dark-gray-color, 12%);
 $white-color: #ececec;
 $blue-color: #33d8ff;
-$dark-purple-color:#605a96;
+$dark-purple-color: #605a96;
 $green-color: #7eda7a;
 $red-color: #c5074f;
 $light-red-color: #ff8b8b;

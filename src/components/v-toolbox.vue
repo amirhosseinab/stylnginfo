@@ -136,9 +136,18 @@
         max-height: $toolbox-body-height;
         border-radius: 0 0 8px 0;
         font-size: .9rem;
-         z-index: 99;
+        z-index: 99;
         &.expanded {
             min-height: $toolbox-body-height;
+        }
+    }
+
+    @media all and (max-height: $sm__height-limit) {
+        .toolbox-body {
+            max-height: $toolbox-body-height__sm;
+            &.expanded {
+                min-height: $toolbox-body-height__sm;
+            }
         }
     }
 </style>

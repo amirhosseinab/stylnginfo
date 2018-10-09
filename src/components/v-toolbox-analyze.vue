@@ -131,6 +131,12 @@
         }
     }
 
+    @media all and (max-height: $sm__height-limit) {
+        .info-container {
+            flex: 0 1 23.5rem;
+        }
+    }
+
     .btn-analyze {
         flex: 0 1 auto;
         margin: 1.5rem;

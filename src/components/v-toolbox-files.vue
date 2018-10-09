@@ -98,6 +98,7 @@
     $button-group-height: 3.5rem;
     $module-list-height: 3.6rem;
     $body-content-height: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
+
     .file-list-pane {
         display: flex;
         flex-flow: column wrap;
@@ -217,6 +218,13 @@
                 border-radius: 8px;
                 background-color: lighten($dark-gray-color, 4%);
             }
+        }
+    }
+
+    @media all and (max-height: $sm__height-limit) {
+        $body-content-height: calc(#{$toolbox-body-height__sm} - #{$toolbox-body-border-bottom-width});
+        .file-list {
+            flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height});
         }
     }
 
