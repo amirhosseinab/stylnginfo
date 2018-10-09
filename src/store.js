@@ -9,7 +9,7 @@ export default new Vuex.Store({
         indexFile: null,
         selectedFiles: [],
         modules: [],
-        schemeColors: ["#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#e9e9e9", "#bc80bd", "#ccebc5", "#ffed6f"],
+        schemeColors: ["#6ef5de", "#ffffb3", "#d2bcff", "#ffa979", "#67adff", "#e2b900", "#a1ff00", "#fccde5", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
     },
     getters: {
         indexFile: s => s.indexFile,
