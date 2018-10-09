@@ -1,6 +1,6 @@
 <template>
-    <div :class="['btn',{'clicked':clicked}]" @mousedown="clicked=true" @mouseup="clicked=false"
-         @click="$emit('click',$event)">
+    <div :class="['btn',{'clicked':clicked && !disable}]" @mousedown="clicked=true" @mouseup="clicked=false"
+         @click="disable?null: $emit('click',$event)">
         <font-awesome-icon v-if="icon" class="btn-icon" :icon="icon"/>
         <div class="btn-text">{{title}}</div>
     </div>
@@ -15,6 +15,10 @@
             }
         },
         props: {
+            disable: {
+                type: Boolean,
+                default: false
+            },
             icon: {
                 type: Object,
                 required: false
