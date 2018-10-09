@@ -1,5 +1,7 @@
 <template>
     <div class="file-list-pane">
+        <v-wait-modal :show="analyzing"/>
+
         <input type="file" ref="filesInput" @change="addSelectedFiles($refs.filesInput)" multiple
                accept="text/css, text/html"/>
         <input type="file" ref="indexFileInput" @change="addIndexFile($refs.indexFileInput)" accept="text/html"/>
@@ -49,6 +51,7 @@
     import {mapGetters, mapMutations} from 'vuex';
 
     import vButton from "@/components/v-button.vue";
+    import vWaitModal from "@/components/v-wait-modal.vue";
     import {faCheck, faFileAlt, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons"
 
     export default {
@@ -65,9 +68,10 @@
         },
         components: {
             vButton,
+            vWaitModal,
         },
         computed: {
-            ...mapGetters(['selectedFiles', 'indexFile', 'modules']),
+            ...mapGetters(['selectedFiles', 'indexFile', 'modules', 'analyzing']),
 
             htmlFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/html")

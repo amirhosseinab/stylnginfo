@@ -1,5 +1,6 @@
 <template>
     <div class="analyze-pane">
+        <v-wait-modal :show="analyzing"/>
         <div class="info-container">
             <div class="info-item">
                 <div class="info-title">Index File</div>
@@ -19,7 +20,6 @@
                 <div class="info-title">Total CSS Files</div>
                 <div class="info-value" :class="{'missing-data':!cssFiles.length}">{{cssFiles.length}}</div>
             </div>
-
         </div>
         <v-button title="Analyze Now" :icon="icons.analyze" class="btn-analyze" :disable="isAnalyzedDisabled"
                   :class="{'disabled-button':isAnalyzedDisabled}" @click="analyze"/>
@@ -28,6 +28,7 @@
 
 <script>
     import vButton from '@/components/v-button.vue';
+    import vWaitModal from '@/components/v-wait-modal.vue';
     import {faCheck, faFlask, faTimes} from '@fortawesome/free-solid-svg-icons';
     import {mapActions, mapGetters} from 'vuex';
 
@@ -43,7 +44,7 @@
             }
         },
         computed: {
-            ...mapGetters(['modules', 'selectedFiles', 'indexFile']),
+            ...mapGetters(['modules', 'selectedFiles', 'indexFile', 'analyzing']),
             htmlFiles() {
                 return this.selectedFiles.filter(sf => sf.type === "text/html")
             },
@@ -62,12 +63,14 @@
         },
         components: {
             vButton,
+            vWaitModal,
         }
     }
 </script>
 
 <style scoped lang="scss">
     .analyze-pane {
+        position: relative;
         display: flex;
         flex-flow: column wrap;
         align-items: center;
