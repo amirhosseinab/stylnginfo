@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -77,20 +76,24 @@ export default new Vuex.Store({
     },
     actions: {
         analyze({commit, getters}) {
-            if (getters.waiting) return;
-            commit('wait', true);
-
             let formData = new FormData();
-            getters.files.forEach(f => {
-                formData.append("files", f, f.name)
-            });
-
-            axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-                .then(r => {
-                    commit('setGraphData', r.data);
+            getters.selectedFiles
+                .map(sf => {
+                    if (sf.module) {
+                        sf.module = sf.module.name;
+                    }
+                    return sf;
                 })
-                .catch(e => console.log(e))
-                .finally(() => commit('wait', false));
+                .forEach(f => {
+                    formData.append("files", f, f.name)
+                });
+            // axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
+            //     .then(r => {
+            //         //commit('setGraphData', r.data);
+            //     })
+            //     .catch(e => console.log(e))
+            //     .finally(() => {
+            //     });
         }
     }
 })
