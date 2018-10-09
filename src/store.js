@@ -10,12 +10,14 @@ export default new Vuex.Store({
         modules: [],
         schemeColors: ["#6ef5de", "#ffffb3", "#d2bcff", "#ffa979", "#67adff", "#e2b900", "#a1ff00", "#fccde5", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
         analyzing: false,
+        analyzingTime: 0,
     },
     getters: {
         indexFile: s => s.indexFile,
         selectedFiles: s => s.selectedFiles,
         modules: s => s.modules,
         analyzing: s => s.analyzing,
+        analyzingTime: s => s.analyzingTime,
     },
     mutations: {
         addSelectedFiles(s, fs) {
@@ -69,6 +71,7 @@ export default new Vuex.Store({
             s.indexFile = null;
             s.modules = [];
             s.selectedFiles = [];
+            s.analyzingTime = 0;
         },
         removeModule(s, m) {
             let mf = s.selectedFiles
@@ -82,11 +85,17 @@ export default new Vuex.Store({
         },
         setAnalyzing(s, value) {
             s.analyzing = value;
+        },
+        setAnalyzingTime(s, time) {
+            s.analyzingTime = time;
         }
     },
     actions: {
         analyze({commit, getters}) {
             commit('setAnalyzing', true);
+            commit('setAnalyzingTime', 0);
+            let startTime = new Date();
+
             let formData = new FormData();
             getters.selectedFiles
                 .map(sf => {
@@ -101,6 +110,9 @@ export default new Vuex.Store({
                 });
             setTimeout(function () {
                 commit('setAnalyzing', false)
+                let endTime = new Date();
+                let elapsedTime = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+                commit('setAnalyzingTime', elapsedTime);
             }, 4000)
             // axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
             //     .then(r => {
