@@ -33,7 +33,7 @@
         <div class="file-list">
             <div class="info" v-if="!selectedFiles.length">HTML & CSS Files will be Shown Here</div>
             <div v-for="file in htmlFiles" :key="file.name" class="file-item html file-name"
-                 :class="{'has-module':file.module==='cfp'}" :style="{borderColor: file.module.color}">
+                 :style="{borderColor: file.module.color}">
                 <div>{{file.name}}</div>
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
             </div>
@@ -115,7 +115,6 @@
         justify-content: space-between;
         align-items: center;
         padding: .5rem;
-        //max-height: $button-group-height;
 
         .btn-add-files, .btn-remove-files {
             flex: 0 1 6.5rem;
@@ -207,14 +206,16 @@
             padding: .4rem .5rem;
             margin: .15rem .2rem;
             background-color: $dark-gray-color;
-            border-radius:0 8px 8px 0;
-            border-left: solid .5rem;
+            border-radius: 0 8px 8px 0;
 
             &.html {
                 color: $blue-color;
+                border-left: solid .5rem;
             }
             &.css {
                 color: $green-color;
+                border-radius: 8px;
+                background-color: lighten($dark-gray-color, 4%);
             }
         }
     }
