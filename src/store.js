@@ -15,11 +15,11 @@ export default new Vuex.Store({
             elapsedTime: 0,
         },
         graphs: [
-            {title: "Graph No.1", component: null},
-            {title: "Graph No.2", component: null},
-            {title: "Graph No.3", component: null},
-            {title: "Graph No.4", component: null},
-            {title: "Graph No.5", component: null}],
+            {title: "Graph No.1", component: null, show: true,},
+            {title: "Graph No.2", component: null, show: true,},
+            {title: "Graph No.3", component: null, show: true,},
+            {title: "Graph No.4", component: null, show: true,},
+            {title: "Graph No.5", component: null, show: true,}],
     },
     getters: {
         indexFile: s => s.indexFile,

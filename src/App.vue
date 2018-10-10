@@ -3,7 +3,7 @@
         <main>
             <v-toolbox/>
             <div class="main-content">
-                <v-graph-box v-for="graph in graphs" :title="graph.title" :key="graph.name">
+                <v-graph-box v-for="graph in activeGraphs" :title="graph.title" :key="graph.name">
                     <component :is="graph.component" class="graph-item"/>
                 </v-graph-box>
             </div>
@@ -21,6 +21,9 @@
         name: "app",
         computed: {
             ...mapGetters(['graphs']),
+            activeGraphs() {
+                return this.graphs.filter(g => g.show)
+            }
         },
         components: {
             vToolbox,
