@@ -127,7 +127,7 @@ export default new Vuex.Store({
 
                 commit('setScrutinyElapsedTime', elapsedTime);
                 commit('setScrutinyData', {});
-            }, 4400)
+            }, 2350)
             // axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
             //     .then(r => {
             //         //commit('setGraphData', r.data);

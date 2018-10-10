@@ -36,6 +36,7 @@
 </script>
 <style lang="scss">
     .main-content {
+        position: relative;
         display: flex;
         flex-flow: row wrap;
         align-items: flex-start;
