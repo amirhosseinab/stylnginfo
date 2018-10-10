@@ -14,12 +14,19 @@ export default new Vuex.Store({
             inProgress: false,
             elapsedTime: 0,
         },
+        graphs: [
+            {title: "Graph No.1", component: null},
+            {title: "Graph No.2", component: null},
+            {title: "Graph No.3", component: null},
+            {title: "Graph No.4", component: null},
+            {title: "Graph No.5", component: null}],
     },
     getters: {
         indexFile: s => s.indexFile,
         selectedFiles: s => s.selectedFiles,
         modules: s => s.modules,
         scrutinyData: s => s.scrutinyData,
+        graphs: s => s.graphs,
     },
     mutations: {
         addSelectedFiles(s, fs) {

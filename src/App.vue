@@ -3,19 +3,8 @@
         <main>
             <v-toolbox/>
             <div class="main-content">
-                <v-graph-box title="Graph No.1">
-                </v-graph-box>
-
-                <v-graph-box title="Graph No.2">
-                </v-graph-box>
-
-                <v-graph-box title="Graph No.3">
-                </v-graph-box>
-
-                <v-graph-box title="Graph No.4">
-                </v-graph-box>
-
-                <v-graph-box title="Graph No.5">
+                <v-graph-box v-for="graph in graphs" :title="graph.title" :key="graph.name">
+                    <component :is="graph.component" class="graph-item"/>
                 </v-graph-box>
             </div>
         </main>
@@ -25,12 +14,18 @@
 <script>
     import vToolbox from '@/components/v-toolbox.vue';
     import vGraphBox from '@/components/v-graph-box.vue';
+    import vButton from '@/components/v-button.vue';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: "app",
+        computed: {
+            ...mapGetters(['graphs']),
+        },
         components: {
             vToolbox,
             vGraphBox,
+            vButton,
         }
     }
 </script>
@@ -44,5 +39,8 @@
         align-content: flex-start;
 
         min-height: calc(100vh - #{$header-height} - #{$footer-height});
+        .graph-item {
+            margin-top: 1rem;
+        }
     }
 </style>
