@@ -3,9 +3,11 @@
         <main>
             <v-toolbox/>
             <div class="main-content">
-                <v-graph-box v-for="graph in activeGraphs" :title="graph.title" :key="graph.name">
-                    <component :is="graph.component" class="graph-item"/>
-                </v-graph-box>
+                <v-user-guide/>
+                <!--<v-graph-box v-for="graph in activeGraphs" :title="graph.title" :key="graph.name">-->
+                <!--<component :is="graph.component" class="graph-item"/>-->
+                <!--</v-graph-box>-->
+
             </div>
         </main>
     </div>
@@ -15,6 +17,8 @@
     import vToolbox from '@/components/v-toolbox.vue';
     import vGraphBox from '@/components/v-graph-box.vue';
     import vButton from '@/components/v-button.vue';
+    import vUserGuide from '@/components/v-user-guide.vue';
+
     import {mapGetters} from 'vuex';
 
     export default {
@@ -29,6 +33,7 @@
             vToolbox,
             vGraphBox,
             vButton,
+            vUserGuide,
         }
     }
 </script>
