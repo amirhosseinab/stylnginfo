@@ -1,6 +1,6 @@
 <template>
     <div class="file-list-pane">
-        <v-wait-modal :show="analyzing"/>
+        <v-wait-modal :show="scrutinyData.inProgress"/>
 
         <input type="file" ref="filesInput" @change="addSelectedFiles($refs.filesInput)" multiple
                accept="text/css, text/html"/>
@@ -71,7 +71,7 @@
             vWaitModal,
         },
         computed: {
-            ...mapGetters(['selectedFiles', 'indexFile', 'modules', 'analyzing']),
+            ...mapGetters(['selectedFiles', 'indexFile', 'modules', 'scrutinyData']),
 
             htmlFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/html")

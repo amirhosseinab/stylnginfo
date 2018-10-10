@@ -3,7 +3,11 @@
         <main>
             <v-toolbox/>
             <div class="main-content">
-                <v-graph/>
+                <v-graph-box title="Graph No.1">
+                </v-graph-box>
+
+                <v-graph-box title="Graph No.2">
+                </v-graph-box>
             </div>
         </main>
     </div>
@@ -11,13 +15,13 @@
 
 <script>
     import vToolbox from '@/components/v-toolbox.vue';
-    import vGraph from '@/components/v-graph.vue';
+    import vGraphBox from '@/components/v-graph-box.vue';
 
     export default {
         name: "app",
         components: {
             vToolbox,
-            vGraph,
+            vGraphBox,
         }
     }
 </script>

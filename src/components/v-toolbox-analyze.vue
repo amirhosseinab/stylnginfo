@@ -1,6 +1,6 @@
 <template>
     <div class="analyze-pane">
-        <v-wait-modal :show="analyzing"/>
+        <v-wait-modal :show="scrutinyData.inProgress"/>
         <div class="info-container">
             <div class="info-item">
                 <div class="info-title">Index File</div>
@@ -20,13 +20,14 @@
                 <div class="info-title">Total CSS Files</div>
                 <div class="info-value" :class="{'missing-data':!cssFiles.length}">{{cssFiles.length}}</div>
             </div>
-            <div class="info-item expand" v-if="analyzingTime">
+            <hr class="h-line" v-if="scrutinyData.elapsedTime">
+            <div class="info-item expand" v-if="scrutinyData.elapsedTime">
                 <div class="info-title">Elapsed Time</div>
-                <div class="info-value">{{analyzingTime}}s</div>
+                <div class="info-value">{{scrutinyData.elapsedTime}}s</div>
             </div>
         </div>
         <v-button title="Analyze Now" :icon="icons.analyze" class="btn-analyze" :disable="isAnalyzedDisabled"
-                  :class="{'disabled-button':isAnalyzedDisabled}" @click="analyze"/>
+                  :class="{'disabled-button':isAnalyzedDisabled}" @click="scrutinize"/>
     </div>
 </template>
 
@@ -48,7 +49,7 @@
             }
         },
         computed: {
-            ...mapGetters(['modules', 'selectedFiles', 'indexFile', 'analyzing', 'analyzingTime']),
+            ...mapGetters(['modules', 'selectedFiles', 'indexFile', 'scrutinyData']),
             htmlFiles() {
                 return this.selectedFiles.filter(sf => sf.type === "text/html")
             },
@@ -63,7 +64,7 @@
             }
         },
         methods: {
-            ...mapActions(['analyze']),
+            ...mapActions(['scrutinize']),
         },
         components: {
             vButton,
@@ -136,6 +137,13 @@
                 }
             }
         }
+    }
+
+    .h-line {
+        width: 100%;
+        margin: 1rem;
+        border: solid 2px darken($mid-gray-color, 10%);
+        border-radius: 10px;
     }
 
     @media all and (max-height: $sm__height-limit) {

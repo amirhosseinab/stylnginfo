@@ -8,16 +8,18 @@ export default new Vuex.Store({
         indexFile: null,
         selectedFiles: [],
         modules: [],
-        schemeColors: ["#6ef5de", "#ffffb3", "#d2bcff", "#ffa979", "#67adff", "#e2b900", "#a1ff00", "#fccde5", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
-        analyzing: false,
-        analyzingTime: 0,
+        schemeColors: ["#2aeaf5", "#ffa836", "#a59bda", "#ff6eb2", "#00cc58", "#feff48", "#0cb79d", "#ffd9ed", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
+        scrutinyData: {
+            data: null,
+            inProgress: false,
+            elapsedTime: 0,
+        },
     },
     getters: {
         indexFile: s => s.indexFile,
         selectedFiles: s => s.selectedFiles,
         modules: s => s.modules,
-        analyzing: s => s.analyzing,
-        analyzingTime: s => s.analyzingTime,
+        scrutinyData: s => s.scrutinyData,
     },
     mutations: {
         addSelectedFiles(s, fs) {
@@ -71,7 +73,10 @@ export default new Vuex.Store({
             s.indexFile = null;
             s.modules = [];
             s.selectedFiles = [];
-            s.analyzingTime = 0;
+
+            s.scrutinyData.elapsedTime = 0;
+            s.scrutinyData.inProgress = false;
+            s.scrutinyData.data = null;
         },
         removeModule(s, m) {
             let mf = s.selectedFiles
@@ -83,20 +88,27 @@ export default new Vuex.Store({
 
             s.modules.splice(s.modules.indexOf(m), 1)
         },
-        setAnalyzing(s, value) {
-            s.analyzing = value;
+
+        setScrutinyInProgress(s) {
+            s.scrutinyData.inProgress = true;
         },
-        setAnalyzingTime(s, time) {
-            s.analyzingTime = time;
-        }
+        setScrutinyElapsedTime(s, time) {
+            s.scrutinyData.elapsedTime = time;
+        },
+        setScrutinyData(s, data) {
+            s.scrutinyData.inProgress = false;
+            s.scrutinyData.data = data;
+        },
     },
     actions: {
-        analyze({commit, getters}) {
-            commit('setAnalyzing', true);
-            commit('setAnalyzingTime', 0);
+        scrutinize({commit, getters}) {
             let startTime = new Date();
+            commit('setScrutinyInProgress');
+            commit('setScrutinyElapsedTime', 0);
 
             let formData = new FormData();
+            let modules = [];
+
             getters.selectedFiles
                 .map(sf => {
                     let file = Vue.util.extend({}, sf);
@@ -109,11 +121,13 @@ export default new Vuex.Store({
                     formData.append("files", f, f.name)
                 });
             setTimeout(function () {
-                commit('setAnalyzing', false)
                 let endTime = new Date();
-                let elapsedTime = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
-                commit('setAnalyzingTime', elapsedTime);
-            }, 4000)
+
+                let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 100) / 10;
+
+                commit('setScrutinyElapsedTime', elapsedTime);
+                commit('setScrutinyData', {});
+            }, 4400)
             // axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
             //     .then(r => {
             //         //commit('setGraphData', r.data);

@@ -42,8 +42,8 @@
                 items: [
                     {title: "Files", icon: faFileCode, component: vToolboxFiles},
                     {title: "Analyze", icon: faFlask, component: vToolboxAnalyze},
-                    {title: "Filters", icon: faFilter, component: vToolboxFilter},
                     {title: "Graphs", icon: faChartBar, component: vToolboxGraph},
+                    {title: "Filters", icon: faFilter, component: vToolboxFilter},
                 ],
                 currentItem: null,
                 showToolbox: false,
@@ -65,7 +65,8 @@
 
 <style lang="scss" scoped>
     .toolbox {
-        $toolbox-left-indent: 20.5rem;
+        //$toolbox-left-indent: 20.5rem;
+        $toolbox-left-indent: $toolbox-width * .83;
         position: fixed;
         top: $toolbox-top;
         left: -#{$toolbox-left-indent};
