@@ -1,7 +1,7 @@
 <template>
     <div ref="container" class="modal-container" v-if="show">
-        <font-awesome-icon :icon="icons.waiting" size="3x" spin/>
-        <div class="waiting-message">Please Wait...</div>
+        <font-awesome-icon :icon="icons.waiting" size="3x" spin class="animated"/>
+        <div class="waiting-message animated">Please Wait...</div>
     </div>
 </template>
 
@@ -23,24 +23,18 @@
                 required: true,
             }
         },
-        updated() {
-            let that = this;
-            setTimeout(function () {
-                that.$refs.container && that.$refs.container.classList.add("show")
-            }, 10)
-        }
     }
 </script>
 
 <style scoped lang="scss">
     .modal-container {
-        color: $light-blue-color;
+        color: lighten($dark-gray-color, 60%);
         position: absolute;
         height: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
-        width: $toolbox-width;
-        opacity: .1;
+        width: calc(#{$toolbox-width} - #{$toolbox-body-border-bottom-width});
+        opacity: .9;
         background-color: $dark-gray-color;
-        z-index: 110;
+        z-index: 999;
         top: 0;
         left: 0;
 
@@ -54,15 +48,28 @@
             margin: 1rem;
             font-size: 1.5rem;
             font-weight: bold;
-        }
-        &.show {
-            opacity: .9;
+            animation-name: fade-out-in;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-out;
+            animation-duration: 2s;
         }
     }
 
     @media all and (max-height: $sm__height-limit) {
         .modal-container {
             height: calc(#{$toolbox-body-height__sm} - #{$toolbox-body-border-bottom-width});
+        }
+    }
+
+    @keyframes fade-out-in {
+        0%{
+            opacity: .3;
+        }
+        50%{
+            opacity: 1;
+        }
+        100%{
+            opacity: .3;
         }
     }
 </style>

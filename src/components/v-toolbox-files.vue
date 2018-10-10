@@ -7,16 +7,18 @@
         <input type="file" ref="indexFileInput" @change="addIndexFile($refs.indexFileInput)" accept="text/html"/>
 
         <div class="btn-group">
-            <v-button title="Add Files" :icon="icons.addFiles" @click="selectFiles" class="btn-add-files"/>
-            <v-button title="Remove All" :icon="icons.remove" @click="removeAllFiles" class="btn-remove-files"
+            <v-button title="Add Files" :icon="icons.addFiles" @click="selectFiles" class="btn-add-files btn"/>
+            <v-button title="Remove All" :icon="icons.remove" @click="removeAllFiles" class="btn-remove-files btn"
                       v-if="selectedFiles.length"/>
-            <v-button v-if="!indexFile" title="Add Index File" :icon="icons.addIndexFile" @click="selectIndexFile"/>
+            <v-button v-if="!indexFile" title="Add Index File" :icon="icons.addIndexFile" @click="selectIndexFile"
+                      class="btn"/>
             <div v-else class="index-file">
                 <span class="file-name">{{indexFile.name}}</span>
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeIndexFile"/>
             </div>
         </div>
-        <div class="module-list" v-if="modules.length">
+        <div class="module-list">
+            <div class="info module-list" v-if="!modules.length">Modules</div>
             <div v-for="(module,index) in modules" :key="index" class="module-item"
                  :class="{'edit-mode':module.editMode}"
                  :style="{backgroundColor:module.color}">
@@ -98,16 +100,17 @@
 </script>
 
 <style scoped lang="scss">
-    $file-list-background-color: lighten($mid-gray-color, 2%);
+    $file-list-background-color: darken($mid-gray-color, 7%);
+    $info-color: lighten($file-list-background-color, 5%);
     $button-group-height: 3.5rem;
-    $module-list-height: 3.6rem;
+    $module-list-height: 3.5rem;
     $body-content-height: calc(#{$toolbox-body-height} - #{$toolbox-body-border-bottom-width});
 
     .file-list-pane {
         display: flex;
         flex-flow: column wrap;
         align-items: stretch;
-        justify-content: flex-start;
+        justify-content: stretch;
         position: relative;
         z-index: 99;
 
@@ -120,7 +123,9 @@
         justify-content: space-between;
         align-items: center;
         padding: .5rem;
-
+        .btn {
+            background-color: lighten($mid-gray-color, 3%);
+        }
         .btn-add-files, .btn-remove-files {
             flex: 0 1 6.5rem;
         }
@@ -139,15 +144,23 @@
 
     .module-list {
         flex: 0 1 $module-list-height;
-        max-height: min-content;
+        //max-height: min-content;
         display: flex;
         flex-flow: row wrap;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-start;
         overflow: auto;
-        padding: .4rem .2rem;
-        background-color: darken($file-list-background-color, 14%);
+        padding: .2rem;
+        background-color: $file-list-background-color;
+        margin: 0 .5rem;
+        border-radius: 8px;
         @extend %scrollbar;
+        &.info {
+            color: $info-color;
+            font-size: 1.7rem;
+            align-self: center;
+            justify-content: center;
+        }
         .module-item {
             display: flex;
             align-items: center;
@@ -190,15 +203,18 @@
     }
 
     .file-list {
-        flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height});
+
+        flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height} - 1rem);
         overflow: auto;
+        transform: translateY(.5rem);
+        margin: 0 .5rem;
+        border-radius: 8px;
 
         display: flex;
         flex-flow: row wrap;
         align-items: flex-start;
         justify-content: flex-start;
         align-content: flex-start;
-
         padding: .3rem .2rem;
         background-color: $file-list-background-color;
 
@@ -228,7 +244,7 @@
     @media all and (max-height: $sm__height-limit) {
         $body-content-height: calc(#{$toolbox-body-height__sm} - #{$toolbox-body-border-bottom-width});
         .file-list {
-            flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height});
+            flex: 1 0 calc(#{$body-content-height} - #{$button-group-height} - #{$module-list-height} - 1rem);
         }
     }
 
@@ -252,8 +268,9 @@
     .info {
         flex-grow: 1;
         text-align: center;
+        margin: 0 .5rem;
         align-self: center;
-        color: darken($file-list-background-color, 4%);
+        color: $info-color;
         font-weight: bold;
         font-size: 2.5rem;
     }

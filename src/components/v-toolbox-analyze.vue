@@ -20,8 +20,8 @@
                 <div class="info-title">Total CSS Files</div>
                 <div class="info-value" :class="{'missing-data':!cssFiles.length}">{{cssFiles.length}}</div>
             </div>
-            <hr class="h-line" v-if="scrutinyData.elapsedTime">
-            <div class="info-item expand" v-if="scrutinyData.elapsedTime">
+            <hr class="h-line" v-show="scrutinyData.elapsedTime">
+            <div class="info-item expand" v-show="scrutinyData.elapsedTime">
                 <div class="info-title">Elapsed Time</div>
                 <div class="info-value">{{scrutinyData.elapsedTime}}s</div>
             </div>
@@ -84,19 +84,18 @@
     }
 
     .info-container {
-        flex: 0 1 27rem;
+        flex: 0 1 29.5rem;
         display: flex;
         flex-flow: row wrap;
 
         justify-content: flex-start;
         align-content: flex-start;
-        padding: .5rem;
         position: relative;
         align-self: stretch;
         overflow: auto;
         @extend %scrollbar;
         .info-item {
-            flex: 1 0 10rem;
+            flex: 1 0 auto;
 
             display: flex;
             flex-flow: row wrap;
@@ -105,6 +104,8 @@
             margin: .25rem;
             font-size: .8rem;
             color: $white-color;
+
+            transition: all .2s ease-in-out;
             &.expand {
                 flex-basis: 20rem;
             }
@@ -148,7 +149,7 @@
 
     @media all and (max-height: $sm__height-limit) {
         .info-container {
-            flex: 0 1 23.5rem;
+            flex: 0 1 22.5rem;
         }
     }
 

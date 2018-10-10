@@ -15,8 +15,11 @@
         </div>
 
         <keep-alive>
-            <component :class="['toolbox-body',{'expanded':!!currentItem}]"
-                       :is="!!currentItem ? currentItem.component : null"/>
+            <div class="toolbox-body" v-if="!!currentItem">
+                <transition name="component-switch" mode="out-in">
+                    <component :is="!!currentItem ? currentItem.component : null"/>
+                </transition>
+            </div>
         </keep-alive>
     </div>
 </template>
@@ -64,6 +67,15 @@
 </script>
 
 <style lang="scss" scoped>
+    .component-switch-enter-active, .component-switch-leave-active {
+        transition: all .2s ease-out;
+    }
+
+    .component-switch-enter, .component-switch-leave-to {
+        transform: translateX(-#{$toolbox-width * .7 });
+        opacity: 0;
+    }
+
     .toolbox {
         //$toolbox-left-indent: 20.5rem;
         $toolbox-left-indent: $toolbox-width * .83;
@@ -138,17 +150,13 @@
         border-radius: 0 0 8px 0;
         font-size: .9rem;
         z-index: 99;
-        &.expanded {
-            min-height: $toolbox-body-height;
-        }
+        min-height: $toolbox-body-height;
     }
 
     @media all and (max-height: $sm__height-limit) {
         .toolbox-body {
             max-height: $toolbox-body-height__sm;
-            &.expanded {
-                min-height: $toolbox-body-height__sm;
-            }
+            min-height: $toolbox-body-height__sm;
         }
     }
 </style>

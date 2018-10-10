@@ -8,6 +8,15 @@
 
                 <v-graph-box title="Graph No.2">
                 </v-graph-box>
+
+                <v-graph-box title="Graph No.3">
+                </v-graph-box>
+
+                <v-graph-box title="Graph No.4">
+                </v-graph-box>
+
+                <v-graph-box title="Graph No.5">
+                </v-graph-box>
             </div>
         </main>
     </div>
