@@ -19,7 +19,7 @@ func main() {
     r.HandleFunc("/", IndexHandler)
 
     a := r.PathPrefix("/api").Subrouter()
-    a.HandleFunc("/analyze", app.UploadFilesHandler).Methods("POST")
+    a.HandleFunc("/CssFilesWeight", app.CSSFileHandler).Methods("POST")
 
     r.NotFoundHandler = http.HandlerFunc(IndexHandler)
 
@@ -27,7 +27,8 @@ func main() {
         Handler:      r,
         Addr:         ":" + port,
         WriteTimeout: 60 * time.Second,
-        ReadTimeout:  60 * time.Second,
+        ReadTimeout:  30 * time.Second,
+        IdleTimeout:  30 * time.Second,
     }
 
     log.Fatal(srv.ListenAndServe())

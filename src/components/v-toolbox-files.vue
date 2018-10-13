@@ -1,21 +1,25 @@
 <template>
     <div class="file-list-pane">
-        <v-wait-modal :show="scrutinyData.inProgress"/>
+        <v-wait-modal :show="inProgress"/>
 
         <input type="file" ref="filesInput" @change="addSelectedFiles($refs.filesInput)" multiple
                accept="text/css, text/html"/>
         <input type="file" ref="indexFileInput" @change="addIndexFile($refs.indexFileInput)" accept="text/html"/>
 
         <div class="btn-group">
-            <v-button title="Add Files" :icon="icons.addFiles" @click="selectFiles" class="btn-add-files btn"/>
+            <div class="btn-group-add">
+                <v-button title="Add Files" :icon="icons.addFiles" @click="selectFiles" class="btn-add-files btn"/>
+                <v-button v-if="!indexFile" title="Add Index File" :icon="icons.addIndexFile" @click="selectIndexFile"
+                          class="btn"/>
+                <div v-else class="index-file">
+                    <span class="file-name">{{indexFile.name}}</span>
+                    <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeIndexFile"/>
+                </div>
+            </div>
+
+
             <v-button title="Remove All" :icon="icons.remove" @click="removeAllFiles" class="btn-remove-files btn"
                       v-if="selectedFiles.length"/>
-            <v-button v-if="!indexFile" title="Add Index File" :icon="icons.addIndexFile" @click="selectIndexFile"
-                      class="btn"/>
-            <div v-else class="index-file">
-                <span class="file-name">{{indexFile.name}}</span>
-                <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeIndexFile"/>
-            </div>
         </div>
         <div class="module-list">
             <div class="info module-list" v-if="!modules.length">Modules</div>
@@ -73,13 +77,16 @@
             vWaitModal,
         },
         computed: {
-            ...mapGetters(['selectedFiles', 'indexFile', 'modules', 'scrutinyData']),
+            ...mapGetters(['selectedFiles', 'indexFile', 'modules', 'graphs']),
 
             htmlFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/html")
             },
             cssFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/css")
+            },
+            inProgress() {
+                return this.graphs.some(g => g.inProgress)
             },
         },
         methods: {
@@ -88,13 +95,13 @@
                 this.$refs.filesInput.click()
             },
             selectIndexFile() {
-                this.$refs.indexFileInput.click()
+                this.$refs.indexFileInput.click();
             },
             updateModule(module) {
                 if (module.name !== "") {
                     module.editMode = false;
                 }
-            }
+            },
         }
     }
 </script>
@@ -126,20 +133,32 @@
         .btn {
             background-color: lighten($mid-gray-color, 3%);
         }
-        .btn-add-files, .btn-remove-files {
-            flex: 0 1 6.5rem;
+        .btn-group-add {
+            flex: 0 1 62%;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: space-between;
+            .btn-add-files {
+                background-color: $dark-green-color;
+            }
+            .index-file {
+                flex: 0 1 8rem;
+                background-color: $dark-gray-color;
+                padding: .5rem 1rem;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                color: $yellow-color;
+            }
         }
 
-        .index-file {
-            flex: 0 1 9rem;
-            background-color: $dark-gray-color;
-            padding: .5rem 1rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            color: $yellow-color;
+        .btn-remove-files {
+            flex: 0 0 30%;
+            background-color: $red-color;
         }
+
     }
 
     .module-list {

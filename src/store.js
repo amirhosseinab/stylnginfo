@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -9,23 +10,32 @@ export default new Vuex.Store({
         selectedFiles: [],
         modules: [],
         schemeColors: ["#2aeaf5", "#ffa836", "#a59bda", "#ff6eb2", "#00cc58", "#feff48", "#0cb79d", "#ffd9ed", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
-        scrutinyData: {
-            data: null,
-            inProgress: false,
-            elapsedTime: 0,
-        },
+        selectedGraphName: null,
         graphs: [
-            {title: "Graph No.1", component: null, show: true,},
-            {title: "Graph No.2", component: null, show: true,},
-            {title: "Graph No.3", component: null, show: true,},
-            {title: "Graph No.4", component: null, show: true,},
-            {title: "Graph No.5", component: null, show: true,}],
+            {
+                name: "css-files-weight",
+                title: "CSS Files Weight",
+                component: "v-graph-css-files-weight",
+                data: {},
+                inProgress: false,
+                elapsedTime: null
+            },
+            {
+                name: "html-inline-style",
+                title: "Inline Style Pollution",
+                component: "v-graph-inline-style",
+                data: {},
+                inProgress: false,
+                elapsedTime: null
+            },
+        ],
     },
     getters: {
         indexFile: s => s.indexFile,
         selectedFiles: s => s.selectedFiles,
         modules: s => s.modules,
         scrutinyData: s => s.scrutinyData,
+        selectedGraphName: s => s.selectedGraphName,
         graphs: s => s.graphs,
     },
     mutations: {
@@ -61,14 +71,22 @@ export default new Vuex.Store({
                 return module
             }
         },
+        updateSelectedGraph(s, graphName) {
+            if (s.graphs.find(g => g.name === graphName && Object.keys(g.data).length > 0)) {
+                s.selectedGraphName = graphName;
+            }
+        },
+        deselectAllGraphs(s) {
+            s.selectedGraphName = null;
+        },
         addIndexFile(s, fs) {
             if (fs.files || fs.files.length) {
-                s.indexFile = fs.files[0]
+                s.indexFile = fs.files[0];
             }
             fs.value = "";
         },
         removeIndexFile(s) {
-            s.indexFile = null
+            s.indexFile = null;
         },
         removeFile(s, file) {
             s.selectedFiles.splice(s.selectedFiles.indexOf(file), 1);
@@ -80,10 +98,12 @@ export default new Vuex.Store({
             s.indexFile = null;
             s.modules = [];
             s.selectedFiles = [];
-
-            s.scrutinyData.elapsedTime = 0;
-            s.scrutinyData.inProgress = false;
-            s.scrutinyData.data = null;
+            s.outdatedGraphs = false;
+            s.graphs.forEach(g => {
+                g.inProgress = false;
+                g.elapsedTime = null;
+                g.data = {};
+            })
         },
         removeModule(s, m) {
             let mf = s.selectedFiles
@@ -95,53 +115,61 @@ export default new Vuex.Store({
 
             s.modules.splice(s.modules.indexOf(m), 1)
         },
-
-        setScrutinyInProgress(s) {
-            s.scrutinyData.inProgress = true;
+        updateGraph(s, {graphName, data, elapsedTime}) {
+            let graph = s.graphs.find(g => g.name === graphName);
+            if (!graph) return;
+            graph.data = data;
+            graph.elapsedTime = elapsedTime;
         },
-        setScrutinyElapsedTime(s, time) {
-            s.scrutinyData.elapsedTime = time;
-        },
-        setScrutinyData(s, data) {
-            s.scrutinyData.inProgress = false;
-            s.scrutinyData.data = data;
-        },
+        setGraphState(s, {graphName, inProgress}) {
+            let graph = s.graphs.find(g => g.name === graphName);
+            if (!graph) return;
+            graph.inProgress = inProgress;
+        }
     },
     actions: {
-        scrutinize({commit, getters}) {
-            let startTime = new Date();
-            commit('setScrutinyInProgress');
-            commit('setScrutinyElapsedTime', 0);
+        getCssFilesWeight({commit, getters}) {
+            // This method provide data for a bubble chart of css files' weight
+            // sample: https://beta.observablehq.com/@mbostock/d3-bubble-chart
+            //  .map(sf => {
+            //       let file = Vue.util.extend({}, sf);
+            //       if (file.module) {
+            //           file.module = file.module.name;
+            //       }
+            //       return file;
+            //   })
+
+            const graphName = "css-files-weight";
+            const startTime = new Date();
+
+            commit('setGraphState', {graphName, inProgress: true});
 
             let formData = new FormData();
-            let modules = [];
-
+            formData.append("indexFile", getters.indexFile, getters.indexFile.name);
             getters.selectedFiles
-                .map(sf => {
-                    let file = Vue.util.extend({}, sf);
-                    if (file.module) {
-                        file.module = file.module.name;
-                    }
-                    return file;
-                })
+                .filter(sf => sf.type === "text/css")
                 .forEach(f => {
                     formData.append("files", f, f.name)
                 });
-            setTimeout(function () {
-                let endTime = new Date();
 
-                let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 100) / 10;
+            axios.post("/api/CssFilesWeight", formData, {headers: {'Content-Type': 'multipart/form-data'}})
+                .then(({data}) => {
+                    let endTime = new Date();
+                    let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 100) / 10;
+                    commit('updateGraph', {graphName, elapsedTime, data});
+                })
+                .catch(e => console.log(e))
+                .finally(() => commit('setGraphState', {graphName, inProgress: false}))
+        },
 
-                commit('setScrutinyElapsedTime', elapsedTime);
-                commit('setScrutinyData', {});
-            }, 2350)
-            // axios.post("/api/analyze", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-            //     .then(r => {
-            //         //commit('setGraphData', r.data);
-            //     })
-            //     .catch(e => console.log(e))
-            //     .finally(() => {
-            //     });
+        getHtmlCssRelations({commit, getters}) {
+            // This method provide relations between HTML & CSS files and its
+            // weight based on selector usage.
+            // sample: https://bost.ocks.org/mike/uberdata/
+        },
+        scrutinize({commit, dispatch}) {
+            commit("deselectAllGraphs");
+            dispatch("getCssFilesWeight");
         }
     }
 })

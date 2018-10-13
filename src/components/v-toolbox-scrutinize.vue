@@ -1,6 +1,6 @@
 <template>
-    <div class="analyze-pane">
-        <v-wait-modal :show="scrutinyData.inProgress"/>
+    <div class="scrutinize-pane">
+        <v-wait-modal :show="inProgress"/>
         <div class="info-container">
             <div class="info-item">
                 <div class="info-title">Index File</div>
@@ -10,24 +10,27 @@
             </div>
             <div class="info-item expand">
                 <div class="info-title">Total Modules</div>
-                <div class="info-value" :class="{'missing-data':!modules.length}">{{modules.length}}</div>
+                <div class="info-value html" :class="{'missing-data':!modules.length}">{{modules.length}}</div>
             </div>
             <div class="info-item">
                 <div class="info-title">Total HTML Files</div>
-                <div class="info-value" :class="{'missing-data':!htmlFiles.length}">{{htmlFiles.length}}</div>
+                <div class="info-value html" :class="{'missing-data':!htmlFiles.length}">{{htmlFiles.length}}</div>
             </div>
             <div class="info-item">
                 <div class="info-title">Total CSS Files</div>
                 <div class="info-value" :class="{'missing-data':!cssFiles.length}">{{cssFiles.length}}</div>
             </div>
-            <hr class="h-line" v-show="scrutinyData.elapsedTime">
-            <div class="info-item expand" v-show="scrutinyData.elapsedTime">
+            <div class="warning" v-if="showWarning">
+                Because of lacking HTML files, some graphs will be unusable.
+            </div>
+            <hr class="h-line" v-show="elapsedTime">
+            <div class="info-item expand" v-show="elapsedTime">
                 <div class="info-title">Elapsed Time</div>
-                <div class="info-value">{{scrutinyData.elapsedTime}}s</div>
+                <div class="info-value">{{elapsedTime}}s</div>
             </div>
         </div>
-        <v-button title="Analyze Now" :icon="icons.analyze" class="btn-analyze" :disable="isAnalyzedDisabled"
-                  :class="{'disabled-button':isAnalyzedDisabled}" @click="scrutinize"/>
+        <v-button title="Scrutinize Now" :icon="icons.analyze" class="btn-scrutinize" :disable="isScrutinizeDisabled"
+                  :class="{'disabled-button':isScrutinizeDisabled}" @click="scrutinize"/>
     </div>
 </template>
 
@@ -38,7 +41,7 @@
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
-        name: "v-toolbox-analyze",
+        name: "v-toolbox-scrutinize",
         data() {
             return {
                 icons: {
@@ -49,22 +52,29 @@
             }
         },
         computed: {
-            ...mapGetters(['modules', 'selectedFiles', 'indexFile', 'scrutinyData']),
+            ...mapGetters(['modules', 'selectedFiles', 'indexFile', 'graphs']),
             htmlFiles() {
                 return this.selectedFiles.filter(sf => sf.type === "text/html")
             },
             cssFiles() {
                 return this.selectedFiles.filter(sf => sf.type === "text/css")
             },
-            isAnalyzedDisabled() {
-                return !(this.modules.length &&
-                    this.cssFiles.length &&
-                    this.htmlFiles.length &&
+            isScrutinizeDisabled() {
+                return !(this.cssFiles.length &&
                     !!this.indexFile);
+            },
+            showWarning() {
+                return !this.isScrutinizeDisabled && this.htmlFiles.length === 0;
+            },
+            inProgress() {
+                return this.graphs.some(g => g.inProgress)
+            },
+            elapsedTime() {
+                return null
             }
         },
         methods: {
-            ...mapActions(['scrutinize']),
+            ...mapActions(['getCssFilesWeight','scrutinize']),
         },
         components: {
             vButton,
@@ -74,7 +84,7 @@
 </script>
 
 <style scoped lang="scss">
-    .analyze-pane {
+    .scrutinize-pane {
         position: relative;
         display: flex;
         flex-flow: column wrap;
@@ -135,8 +145,19 @@
                 color: $green-color;
                 &.missing-data {
                     color: $light-red-color;
+                    &.html {
+                        color: $yellow-color;
+                    }
                 }
             }
+        }
+        .warning {
+            flex-grow: 1;
+            color: $yellow-color;
+            font-style: italic;
+            font-size: .75rem;
+            margin: 1.2rem .2rem;
+            text-align: center;
         }
     }
 
@@ -153,7 +174,7 @@
         }
     }
 
-    .btn-analyze {
+    .btn-scrutinize {
         flex: 0 1 auto;
         margin: 1.5rem;
         width: 11rem;

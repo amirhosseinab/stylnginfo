@@ -15,7 +15,7 @@ const (
 type (
     FileType int
 
-    AnalyzedData struct {
+    ScrutinyData struct {
         HTMLFiles []*HTMLFile `json:"htmlFiles"`
         CSSFiles  []*CSSFile  `json:"cssFiles"`
     }
@@ -28,6 +28,7 @@ type (
     CSSFile struct {
         *File
         Selectors []*Selector `json:"selectors,omitempty"`
+        IsUsed    bool        `json:"isUsed"`
     }
 
     File struct {
@@ -48,15 +49,49 @@ type (
     }
 )
 
-func AnalyzeFiles(files ...*File) *AnalyzedData {
-    ad := &AnalyzedData{}
+func ScrutinizeCSSFiles(indexFile *File, files []*File) []*CSSFile {
+    var fs []*CSSFile
+    used := getUsedCSSFileNames(indexFile)
+
+    for _, f := range files {
+        _, isUsed := used[f.Name]
+        fs = append(fs, &CSSFile{
+            File:      f,
+            Selectors: extractSelectorsAndLinks(f),
+            IsUsed:    isUsed,
+        })
+    }
+    return fs
+}
+
+func getUsedCSSFileNames(indexFile *File) map[string]bool {
+    var fileNames map[string]bool
+    fileNames = make(map[string]bool)
+
+    reLinks, err := regexp.Compile(`(?m)^\s*<link\s.*?rel\s?=\s?"stylesheet"\s+\/>\s*$`)
+    if err != nil {
+        log.Fatal(err)
+    }
+    links := reLinks.FindAllString(indexFile.Content, -1)
+    rePath, err := regexp.Compile(`\w+\/.*?\.css`)
+    for _, l := range links {
+        p := rePath.FindString(l)
+        fn := p[strings.LastIndex(p, "/")+1:]
+        fileNames[fn] = true
+    }
+
+    return fileNames
+}
+
+func AnalyzeFiles(files ...*File) *ScrutinyData {
+    ad := &ScrutinyData{}
     for _, f := range files {
         if f.FileType == FileTypeHTML {
             ad.HTMLFiles = append(ad.HTMLFiles, &HTMLFile{File: f})
         }
         if f.FileType == FileTypeCSS {
             cf := &CSSFile{File: f}
-            cf.Selectors = ExtractSelectorsAndLinks(f)
+            cf.Selectors = extractSelectorsAndLinks(f)
             ad.CSSFiles = append(ad.CSSFiles, cf)
         }
     }
@@ -92,7 +127,7 @@ func AnalyzeFiles(files ...*File) *AnalyzedData {
     return ad
 }
 
-func ExtractSelectorsAndLinks(file *File) []*Selector {
+func extractSelectorsAndLinks(file *File) []*Selector {
     var selectors []*Selector
 
     var sel map[string]bool

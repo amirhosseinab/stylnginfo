@@ -1,7 +1,7 @@
 <template>
     <div ref="container" class="modal-container" v-if="show">
-        <font-awesome-icon :icon="icons.waiting" size="3x" spin class="animated"/>
-        <div class="waiting-message animated">Please Wait...</div>
+        <font-awesome-icon :icon="icons.waiting" size="3x" spin/>
+        <div v-if="!noText" class="waiting-message animated">Please Wait...</div>
     </div>
 </template>
 
@@ -21,6 +21,9 @@
             show: {
                 type: Boolean,
                 required: true,
+            },
+            noText: {
+                type: Boolean
             }
         },
     }
@@ -62,13 +65,13 @@
     }
 
     @keyframes fade-out-in {
-        0%{
+        0% {
             opacity: .3;
         }
-        50%{
+        50% {
             opacity: 1;
         }
-        100%{
+        100% {
             opacity: .3;
         }
     }

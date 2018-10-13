@@ -29,14 +29,16 @@
         faAngleDoubleLeft,
         faAngleDoubleRight,
         faChartBar,
+        faExclamationTriangle,
         faFileCode,
         faFilter,
-        faFlask
+        faFlask,
     } from "@fortawesome/free-solid-svg-icons";
     import vToolboxFiles from "@/components/v-toolbox-files.vue";
-    import vToolboxAnalyze from "@/components/v-toolbox-analyze.vue";
+    import vToolboxScrutinize from "@/components/v-toolbox-scrutinize.vue";
     import vToolboxFilter from "@/components/v-toolbox-filter.vue";
     import vToolboxGraph from "@/components/v-toolbox-graph.vue";
+    import {mapGetters} from 'vuex';
 
     export default {
         name: "v-toolbox",
@@ -44,7 +46,7 @@
             return {
                 items: [
                     {title: "Files", icon: faFileCode, component: vToolboxFiles},
-                    {title: "Analyze", icon: faFlask, component: vToolboxAnalyze},
+                    {title: "Scrutinize", icon: faFlask, component: vToolboxScrutinize},
                     {title: "Graphs", icon: faChartBar, component: vToolboxGraph},
                     {title: "Filters", icon: faFilter, component: vToolboxFilter},
                 ],
@@ -52,16 +54,19 @@
                 showToolbox: false,
                 arrowRightIcon: faAngleDoubleRight,
                 arrowLeftIcon: faAngleDoubleLeft,
+                warningIcon: faExclamationTriangle,
             }
         },
-
+        computed: {
+            ...mapGetters(['graphs']),
+        },
         methods: {
             toggleToolbox() {
                 this.showToolbox = !this.showToolbox;
                 if (!this.showToolbox) {
                     this.currentItem = null;
                 }
-            },
+            }
         }
     }
 </script>
