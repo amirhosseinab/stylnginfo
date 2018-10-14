@@ -36,6 +36,7 @@ export default new Vuex.Store({
         modules: s => s.modules,
         scrutinyData: s => s.scrutinyData,
         selectedGraphName: s => s.selectedGraphName,
+        selectedGraph: s => s.graphs.find(g => g.name === s.selectedGraphName),
         graphs: s => s.graphs,
     },
     mutations: {

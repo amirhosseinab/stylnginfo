@@ -1,5 +1,7 @@
 <template>
-    
+    <svg>
+
+    </svg>
 </template>
 
 <script>
@@ -8,6 +10,6 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

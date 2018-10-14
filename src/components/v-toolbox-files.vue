@@ -255,7 +255,7 @@
             &.css {
                 color: $green-color;
                 border-radius: 8px;
-                background-color: lighten($dark-gray-color, 4%);
+                background-color: lighten($dark-gray-color, 12%);
             }
         }
     }
