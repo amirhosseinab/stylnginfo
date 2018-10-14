@@ -100,6 +100,8 @@ export default new Vuex.Store({
             s.modules = [];
             s.selectedFiles = [];
             s.outdatedGraphs = false;
+            s.selectedGraphName = null;
+
             s.graphs.forEach(g => {
                 g.inProgress = false;
                 g.elapsedTime = null;

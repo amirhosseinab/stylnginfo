@@ -5,7 +5,7 @@
             <div class="main-content">
                 <v-user-guide v-if="!selectedGraph"/>
                 <v-graph-box v-else :title="selectedGraph.title">
-                    <component slot="graph" :is="selectedGraph.component" class="graph-item"/>
+                    <component slot="graph" :is="selectedGraph.component" class="graph-item" :data="selectedGraph.data"/>
                 </v-graph-box>
             </div>
         </main>

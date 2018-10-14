@@ -27,7 +27,7 @@ type (
 
     CSSFile struct {
         *File
-        Selectors []*Selector `json:"selectors,omitempty"`
+        Selectors []*Selector `json:"selectors"`
         IsUsed    bool        `json:"isUsed"`
     }
 

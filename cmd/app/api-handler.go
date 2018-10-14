@@ -12,6 +12,7 @@ type (
     cssFilesWeightData struct {
         FileName      string `json:"fileName"`
         SelectorCount int    `json:"selectorCount"`
+        IsUsed        bool   `json:"isUsed"`
     }
 )
 
@@ -23,6 +24,7 @@ func CSSFileHandler(w http.ResponseWriter, r *http.Request) {
         d = append(d, &cssFilesWeightData{
             FileName:      f.Name,
             SelectorCount: len(f.Selectors),
+            IsUsed:        f.IsUsed,
         })
     }
 
