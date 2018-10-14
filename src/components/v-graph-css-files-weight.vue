@@ -42,7 +42,7 @@
                 leaf.append("circle")
                     .attr("r", d => d.r + 5)
                     .attr("fill-opacity", 0.7)
-                    .attr("fill", d => d.data.isUsed ? color(d.data.fileName) : "transparent")
+                    .attr("fill", d => d.data.isUsed ? color(d.data.fileName) : "#fff")
                     .attr("stroke", d => d.data.isUsed ? null : "#7b7b7b")
                     .attr("stroke-width", d => d.data.isUsed ? null : 1);
 
@@ -50,10 +50,11 @@
                     .text(d => d.data.fileName)
                     .style("font-size", "1px")
                     .each(fontSize)
-                    .style("font-size", d => `${d.fontScale * 0.7}px`);
+                    .style("font-size", d => `${d.fontScale * 0.7}px`)
+                    .style("fill", "#4a4a4a");
 
                 leaf.append("title")
-                    .text(d => d.data.fileName);
+                    .text(d => `${d.data.fileName}\nSelectors count: ${d.data.selectorCount}`);
 
             }
         },

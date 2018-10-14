@@ -134,12 +134,13 @@
             background-color: lighten($mid-gray-color, 3%);
         }
         .btn-group-add {
-            flex: 0 1 62%;
+            flex: 0 1 64%;
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             justify-content: space-between;
             .btn-add-files {
+                flex: 0 0 auto;
                 background-color: $dark-green-color;
             }
             .index-file {

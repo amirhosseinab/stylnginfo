@@ -20,14 +20,14 @@ export default new Vuex.Store({
                 inProgress: false,
                 elapsedTime: null
             },
-            {
-                name: "html-inline-style",
-                title: "Inline Style Pollution",
-                component: "v-graph-inline-style",
-                data: {},
-                inProgress: false,
-                elapsedTime: null
-            },
+            // {
+            //     name: "html-inline-style",
+            //     title: "Inline Style Pollution",
+            //     component: "v-graph-inline-style",
+            //     data: {},
+            //     inProgress: false,
+            //     elapsedTime: null
+            // },
         ],
     },
     getters: {

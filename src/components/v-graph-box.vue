@@ -12,15 +12,12 @@
     export default {
         name: "v-graph-pane",
         data() {
-            return {
-            }
+            return {}
         },
         props: {
             title: {type: String, required: true}
         },
-        methods: {
-
-        }
+        methods: {}
     }
 </script>
 
@@ -50,12 +47,12 @@
             flex: 0 1 auto;
             font-size: 1rem;
             font-weight: bold;
-            text-align: left;
+            text-align: center;
             margin: 0;
             padding: .2rem .5rem .5rem;
 
-            color: darken($base-gray-color, 10%);
-            border-bottom: solid 3px $base-gray-color;
+            color: darken($base-gray-color, 30%);
+            border-bottom: solid 3px darken($base-gray-color, 10%);
         }
         .graph-content {
             flex: 1 0 auto;
