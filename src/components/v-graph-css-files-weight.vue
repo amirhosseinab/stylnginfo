@@ -1,6 +1,6 @@
 <template>
     <svg id="viewer" ref="svg">
-
+        <g class="legend"></g>
     </svg>
 </template>
 
@@ -15,7 +15,7 @@
                     .attr("text-anchor", "middle");
 
                 const color = d3.scaleOrdinal()
-                    .range(d3.schemeSpectral[11]);
+                    .range(d3.schemeRdPu[5]);
 
                 const height = this.$refs.svg.clientHeight,
                     width = this.$refs.svg.clientWidth;
@@ -34,9 +34,10 @@
                 };
                 const root = pack(this.data);
 
-                const leaf = svg.selectAll("g")
+                const leaf = svg.selectAll("g.file")
                     .data(root.leaves(), d => d.data.fileName)
                     .enter().append("g")
+                    .attr("class", "file")
                     .attr("transform", d => `translate(${d.x},${d.y})`);
 
                 leaf.append("circle")
@@ -56,6 +57,61 @@
                 leaf.append("title")
                     .text(d => `${d.data.fileName}\nSelectors count: ${d.data.selectorCount}`);
 
+                let legend = svg.select("g.legend");
+                legend.append("rect")
+                    .attr("x", 10)
+                    .attr("y", 10)
+                    .attr("width", 140)
+                    .attr("height", 90)
+                    .attr("fill-opacity", 0.7)
+                    .attr("fill", "#f9f9f9")
+                    .attr("stroke", "#a1a1a1")
+                    .attr("stroke-width", 1);
+                legend.append("rect")
+                    .attr("x", 20)
+                    .attr("y", 20)
+                    .attr("width", 120)
+                    .attr("height", 30)
+                    .attr("fill", "#ffffff")
+                    .attr("stroke", "#7b7b7b")
+                    .attr("stroke-width", .5);
+                legend.append("text")
+                    .text(`Unused Files: ${this.data.filter(f => !f.isUsed).length}`)
+                    .attr("x", 80)
+                    .attr("y", 39)
+                    .attr("fill", "#7b7b7b")
+                    .style("font-size", ".7rem");
+
+                let grad = legend.append("defs")
+                    .append("linearGradient");
+                grad.attr("id", "legendGrad")
+                    .attr("x1", "0%")
+                    .attr("y1", "0%")
+                    .attr("x2", "100%")
+                    .attr("y2", "0%");
+                grad.append("stop")
+                    .attr("offset", "0%")
+                    .style("stop-color", "#fbb4b9")
+                    .style("stop-opacity", "1");
+                grad.append("stop")
+                    .attr("offset", "100%")
+                    .style("stop-color", "#7a0177")
+                    .style("stop-opacity", "1");
+
+                legend.append("rect")
+                    .attr("x", 20)
+                    .attr("y", 60)
+                    .attr("width", 120)
+                    .attr("height", 30)
+                    .attr("fill", "url(#legendGrad)")
+                    .attr("stroke", "#7b7b7b")
+                    .attr("stroke-width", .5);
+                legend.append("text")
+                    .text(`Used Files: ${this.data.filter(f => f.isUsed).length}`)
+                    .attr("x", 80)
+                    .attr("y", 79)
+                    .attr("fill", "#f1f1f1")
+                    .style("font-size", ".7rem")
             }
         },
         props: {
