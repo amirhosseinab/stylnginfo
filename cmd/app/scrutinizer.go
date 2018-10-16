@@ -10,6 +10,8 @@ import (
 const (
     FileTypeHTML = iota
     FileTypeCSS
+    FileTypeScss
+    FileTypeLess
 )
 
 type (
@@ -29,6 +31,11 @@ type (
         *File
         Selectors []*Selector `json:"selectors"`
         IsUsed    bool        `json:"isUsed"`
+    }
+
+    LessFile struct {
+        *File
+        ImportedFiles []*File
     }
 
     File struct {
@@ -59,6 +66,16 @@ func ScrutinizeCSSFiles(indexFile *File, files []*File) []*CSSFile {
             File:      f,
             Selectors: extractSelectorsAndLinks(f),
             IsUsed:    isUsed,
+        })
+    }
+    return fs
+}
+func ScrutinizeLessFiles(files []*File) []*LessFile {
+    var fs []*LessFile
+    for _, f := range files {
+        fs = append(fs, &LessFile{
+            File:          f,
+            ImportedFiles: nil,
         })
     }
     return fs

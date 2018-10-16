@@ -3,7 +3,7 @@
         <v-wait-modal :show="inProgress"/>
 
         <input type="file" ref="filesInput" @change="addSelectedFiles($refs.filesInput)" multiple
-               accept="text/css, text/html"/>
+               accept="text/css, text/html, .less, .scss"/>
         <input type="file" ref="indexFileInput" @change="addIndexFile($refs.indexFileInput)" accept="text/html"/>
 
         <div class="btn-group">
@@ -46,6 +46,17 @@
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
             </div>
             <div v-for="file in cssFiles" :key="file.name" class="file-item css file-name">
+                <font-awesome-icon :icon="icons.cssFile" class="css-file-icon" size="2x"/>
+                <div>{{file.name}}</div>
+                <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
+            </div>
+            <div v-for="file in scssFiles" :key="file.name" class="file-item scss file-name">
+                <font-awesome-icon :icon="icons.scssFile" class="scss-file-icon" size="2x"/>
+                <div>{{file.name}}</div>
+                <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
+            </div>
+            <div v-for="file in lessFiles" :key="file.name" class="file-item less file-name">
+                <font-awesome-icon :icon="icons.lessFile" class="less-file-icon" size="2x"/>
                 <div>{{file.name}}</div>
                 <font-awesome-icon :icon="icons.remove" class="remove-button" @click="removeFile(file)"/>
             </div>
@@ -58,7 +69,8 @@
 
     import vButton from "@/components/v-button.vue";
     import vWaitModal from "@/components/v-wait-modal.vue";
-    import {faCheck, faFileAlt, faPlus, faTimes} from "@fortawesome/free-solid-svg-icons"
+    import {faCheck, faFileAlt, faPlus, faTimes,} from "@fortawesome/free-solid-svg-icons";
+    import {faCss3, faLess, faSass} from "@fortawesome/free-brands-svg-icons";
 
     export default {
         name: "v-toolbox-files",
@@ -69,6 +81,9 @@
                     addIndexFile: faFileAlt,
                     remove: faTimes,
                     accept: faCheck,
+                    lessFile: faLess,
+                    scssFile: faSass,
+                    cssFile: faCss3,
                 },
             }
         },
@@ -84,6 +99,12 @@
             },
             cssFiles() {
                 return this.selectedFiles.filter(f => f.type === "text/css")
+            },
+            lessFiles() {
+                return this.selectedFiles.filter(f => f.name.endsWith(".less"))
+            },
+            scssFiles() {
+                return this.selectedFiles.filter(f => f.name.endsWith(".scss"))
             },
             inProgress() {
                 return this.graphs.some(g => g.inProgress)
@@ -253,10 +274,32 @@
                 color: $blue-color;
                 border-left: solid .5rem;
             }
-            &.css {
+            &.css, &.less, &.scss {
+                padding: 0 .5rem 0 .3rem;
+                font-weight: bold;
                 color: $green-color;
                 border-radius: 8px;
                 background-color: lighten($dark-gray-color, 12%);
+            }
+            &.css {
+                .css-file-icon {
+                    padding: .2rem;
+                    margin-right: .1rem;
+                    color: $orange-color;
+                }
+            }
+            &.scss {
+                .scss-file-icon {
+                    padding: .1rem;
+                    margin: 0 .3rem 0 0;
+                    color: $purple-color;
+                }
+            }
+            &.less {
+                .less-file-icon {
+                    margin: 0 .3rem 0 0;
+                    color: $blue-color;
+                }
             }
         }
     }

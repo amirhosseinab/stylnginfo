@@ -20,6 +20,7 @@ func main() {
 
     a := r.PathPrefix("/api").Subrouter()
     a.HandleFunc("/CssFilesWeight", app.CSSFileHandler).Methods("POST")
+    a.HandleFunc("/LessFilesRelations", app.LessFileHandler).Methods("POST")
 
     r.NotFoundHandler = http.HandlerFunc(IndexHandler)
 

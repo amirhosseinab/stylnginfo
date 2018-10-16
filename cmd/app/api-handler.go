@@ -6,6 +6,7 @@ import (
     "log"
     "mime/multipart"
     "net/http"
+    "strings"
 )
 
 type (
@@ -37,10 +38,25 @@ func CSSFileHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(b)
 }
 
+func LessFileHandler(w http.ResponseWriter, r *http.Request) {
+    //_, files := readFiles(r)
+    //var d []*LessFile
+    //
+    //b, err := json.Marshal(d)
+    //if err != nil {
+    //    log.Fatal(err)
+    //}
+    //
+    //w.WriteHeader(http.StatusOK)
+    //w.Write(b)
+}
+
 func readFiles(r *http.Request) (indexFile *File, files []*File) {
     r.ParseMultipartForm(8 << 20)
     _, fh, _ := r.FormFile("indexFile")
-    indexFile = NewFile(getFileInfo(fh))
+    if fh != nil {
+        indexFile = NewFile(getFileInfo(fh))
+    }
 
     fs := r.MultipartForm.File["files"]
     for _, f := range fs {
@@ -78,9 +94,19 @@ func getFileInfo(file *multipart.FileHeader) (fileName, fileType, content string
 }
 
 func NewFile(name, fileType, content string) *File {
+    var ft FileType
     types := map[string]FileType{
         "text/html": FileTypeHTML,
         "text/css":  FileTypeCSS,
     }
-    return &File{Name: name, Content: content, FileType: types[fileType]}
+
+    ft, ok := types[fileType]
+    if !ok && strings.HasSuffix(name, ".less") {
+        ft = FileTypeLess
+    }
+    if !ok && strings.HasSuffix(name, ".scss") {
+        ft = FileTypeScss
+    }
+
+    return &File{Name: name, Content: content, FileType: ft}
 }

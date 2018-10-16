@@ -21,6 +21,14 @@ export default new Vuex.Store({
                 inProgress: false,
                 elapsedTime: null
             },
+            {
+                name: "less-files-relations",
+                title: "Less Files Relations",
+                component: "v-graph-less-files-relations",
+                data: {},
+                inProgress: false,
+                elapsedTime: null
+            },
             // {
             //     name: "html-inline-style",
             //     title: "Inline Style Pollution",
@@ -131,6 +139,28 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        getLessFilesRelations({commit, getters}) {
+            const graphName = "less-files-relations";
+            const startTime = new Date();
+
+            commit('setGraphState', {graphName, inProgress: true});
+
+            let formData = new FormData();
+            getters.selectedFiles
+                .filter(sf => sf.name.endsWith(".less"))
+                .forEach(f => {
+                    formData.append("files", f, f.name)
+                });
+
+            axios.post("/api/LessFilesRelations", formData, {headers: {'Content-Type': 'multipart/form-data'}})
+                .then(({data}) => {
+                    let endTime = new Date();
+                    let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 10) / 100;
+                    commit('updateGraph', {graphName, elapsedTime, data});
+                })
+                .catch(e => console.log(e))
+                .finally(() => commit('setGraphState', {graphName, inProgress: false}))
+        },
         getCssFilesWeight({commit, getters}) {
             // This method provide data for a bubble chart of css files' weight
             // sample: https://beta.observablehq.com/@mbostock/d3-bubble-chart
@@ -158,7 +188,7 @@ export default new Vuex.Store({
             axios.post("/api/CssFilesWeight", formData, {headers: {'Content-Type': 'multipart/form-data'}})
                 .then(({data}) => {
                     let endTime = new Date();
-                    let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 100) / 10;
+                    let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 10) / 100;
                     commit('updateGraph', {graphName, elapsedTime, data});
                 })
                 .catch(e => console.log(e))
@@ -173,6 +203,7 @@ export default new Vuex.Store({
         scrutinize({commit, dispatch}) {
             commit("deselectAllGraphs");
             dispatch("getCssFilesWeight");
+            dispatch("getLessFilesRelations");
         }
     }
 })
