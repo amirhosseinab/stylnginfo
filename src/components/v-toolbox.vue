@@ -31,12 +31,12 @@
         faChartBar,
         faExclamationTriangle,
         faFileCode,
-        faFilter,
+        faCog,
         faFlask,
     } from "@fortawesome/free-solid-svg-icons";
     import vToolboxFiles from "@/components/v-toolbox-files.vue";
     import vToolboxScrutinize from "@/components/v-toolbox-scrutinize.vue";
-    import vToolboxFilter from "@/components/v-toolbox-filter.vue";
+    import vToolboxSettings from "@/components/v-toolbox-settings.vue";
     import vToolboxGraph from "@/components/v-toolbox-graph.vue";
     import {mapGetters} from 'vuex';
 
@@ -48,7 +48,7 @@
                     {title: "Files", icon: faFileCode, component: vToolboxFiles},
                     {title: "Scrutinize", icon: faFlask, component: vToolboxScrutinize},
                     {title: "Graphs", icon: faChartBar, component: vToolboxGraph},
-                    {title: "Filters", icon: faFilter, component: vToolboxFilter},
+                    {title: "Settings", icon: faCog, component: vToolboxSettings},
                 ],
                 currentItem: null,
                 showToolbox: false,

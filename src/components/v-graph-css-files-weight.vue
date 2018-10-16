@@ -14,8 +14,10 @@
                 const svg = d3.select("#viewer")
                     .attr("text-anchor", "middle");
 
+                const scheme = d3.schemeRdPu[8];
                 const color = d3.scaleOrdinal()
-                    .range(d3.schemeRdPu[5]);
+                    .range(scheme);
+
 
                 const height = this.$refs.svg.clientHeight,
                     width = this.$refs.svg.clientWidth;
@@ -91,11 +93,11 @@
                     .attr("y2", "0%");
                 grad.append("stop")
                     .attr("offset", "0%")
-                    .style("stop-color", "#fbb4b9")
+                    .style("stop-color", scheme[1])
                     .style("stop-opacity", "1");
                 grad.append("stop")
                     .attr("offset", "100%")
-                    .style("stop-color", "#7a0177")
+                    .style("stop-color", scheme[scheme.length - 1])
                     .style("stop-opacity", "1");
 
                 legend.append("rect")
@@ -116,7 +118,7 @@
         },
         props: {
             data: {
-                type: Object,
+                type: Array,
                 required: true,
             }
         },

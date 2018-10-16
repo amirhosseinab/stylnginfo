@@ -11,6 +11,7 @@ export default new Vuex.Store({
         modules: [],
         schemeColors: ["#2aeaf5", "#ffa836", "#a59bda", "#ff6eb2", "#00cc58", "#feff48", "#0cb79d", "#ffd9ed", "#f1f1f1", "#bc80bd", "#ccebc5", "#ffed6f"],
         selectedGraphName: null,
+        storedData: null,
         graphs: [
             {
                 name: "css-files-weight",
@@ -34,7 +35,6 @@ export default new Vuex.Store({
         indexFile: s => s.indexFile,
         selectedFiles: s => s.selectedFiles,
         modules: s => s.modules,
-        scrutinyData: s => s.scrutinyData,
         selectedGraphName: s => s.selectedGraphName,
         selectedGraph: s => s.graphs.find(g => g.name === s.selectedGraphName),
         graphs: s => s.graphs,
