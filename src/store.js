@@ -156,22 +156,13 @@ export default new Vuex.Store({
                 .then(({data}) => {
                     let endTime = new Date();
                     let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 10) / 100;
+                    data = data || {};
                     commit('updateGraph', {graphName, elapsedTime, data});
                 })
                 .catch(e => console.log(e))
                 .finally(() => commit('setGraphState', {graphName, inProgress: false}))
         },
         getCssFilesWeight({commit, getters}) {
-            // This method provide data for a bubble chart of css files' weight
-            // sample: https://beta.observablehq.com/@mbostock/d3-bubble-chart
-            //  .map(sf => {
-            //       let file = Vue.util.extend({}, sf);
-            //       if (file.module) {
-            //           file.module = file.module.name;
-            //       }
-            //       return file;
-            //   })
-
             const graphName = "css-files-weight";
             const startTime = new Date();
 
@@ -189,6 +180,7 @@ export default new Vuex.Store({
                 .then(({data}) => {
                     let endTime = new Date();
                     let elapsedTime = Math.round((endTime.getTime() - startTime.getTime()) / 10) / 100;
+                    data = data || {};
                     commit('updateGraph', {graphName, elapsedTime, data});
                 })
                 .catch(e => console.log(e))
@@ -199,7 +191,19 @@ export default new Vuex.Store({
             // This method provide relations between HTML & CSS files and its
             // weight based on selector usage.
             // sample: https://bost.ocks.org/mike/uberdata/
+
+
+            // This method provide data for a bubble chart of css files' weight
+            // sample: https://beta.observablehq.com/@mbostock/d3-bubble-chart
+            //  .map(sf => {
+            //       let file = Vue.util.extend({}, sf);
+            //       if (file.module) {
+            //           file.module = file.module.name;
+            //       }
+            //       return file;
+            //   })
         },
+
         scrutinize({commit, dispatch}) {
             commit("deselectAllGraphs");
             dispatch("getCssFilesWeight");

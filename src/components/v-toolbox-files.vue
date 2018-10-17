@@ -22,7 +22,7 @@
                       v-if="selectedFiles.length"/>
         </div>
         <div class="module-list">
-            <div class="info module-list" v-if="!modules.length">Modules</div>
+            <div class="info module-list" v-if="!modules.length">HTML Modules</div>
             <div v-for="(module,index) in modules" :key="index" class="module-item"
                  :class="{'edit-mode':module.editMode}"
                  :style="{backgroundColor:module.color}">

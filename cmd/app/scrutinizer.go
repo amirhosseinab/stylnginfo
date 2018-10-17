@@ -35,7 +35,7 @@ type (
 
     LessFile struct {
         *File
-        ImportedFiles []*File
+        ImportedFiles []*LessFile
     }
 
     File struct {
@@ -75,10 +75,40 @@ func ScrutinizeLessFiles(files []*File) []*LessFile {
     for _, f := range files {
         fs = append(fs, &LessFile{
             File:          f,
-            ImportedFiles: nil,
+            ImportedFiles: getImportedLessFiles(f, files),
         })
     }
     return fs
+}
+
+func getImportedLessFiles(file *File, files []*File) []*LessFile {
+    re, err := regexp.Compile(`(?m)^@import\s+"(.*)";\s?$`)
+    if err != nil {
+        log.Fatal(err)
+    }
+    var lessFiles []*LessFile
+    fs := re.FindAllStringSubmatch(file.Content, -1)
+    if fs != nil {
+        for _, f := range fs {
+            var file *File
+            fileName := f[1]
+
+            if !strings.HasSuffix(fileName, ".less") {
+                fileName = fileName + ".less"
+            }
+            for _, tf := range files {
+                if tf.Name == fileName {
+                    file = tf
+                    break
+                }
+            }
+            lessFiles = append(lessFiles, &LessFile{
+                File:          file,
+                ImportedFiles: getImportedLessFiles(file, files),
+            })
+        }
+    }
+    return lessFiles
 }
 
 func getUsedCSSFileNames(indexFile *File) map[string]bool {

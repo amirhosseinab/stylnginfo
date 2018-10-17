@@ -18,7 +18,7 @@ type (
 )
 
 func CSSFileHandler(w http.ResponseWriter, r *http.Request) {
-    cssFiles := ScrutinizeCSSFiles(readFiles(r))
+    cssFiles := ScrutinizeCSSFiles(readIndexFile(r), readFiles(r))
     var d []*cssFilesWeightData
 
     for _, f := range cssFiles {
@@ -39,30 +39,36 @@ func CSSFileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LessFileHandler(w http.ResponseWriter, r *http.Request) {
-    //_, files := readFiles(r)
-    //var d []*LessFile
-    //
-    //b, err := json.Marshal(d)
-    //if err != nil {
-    //    log.Fatal(err)
-    //}
-    //
-    //w.WriteHeader(http.StatusOK)
-    //w.Write(b)
+    files := readFiles(r)
+    d := ScrutinizeLessFiles(files)
+
+    b, err := json.Marshal(d)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write(b)
 }
 
-func readFiles(r *http.Request) (indexFile *File, files []*File) {
-    r.ParseMultipartForm(8 << 20)
+func readIndexFile(r *http.Request) *File {
+    var indexFile *File
     _, fh, _ := r.FormFile("indexFile")
     if fh != nil {
         indexFile = NewFile(getFileInfo(fh))
     }
+    return indexFile
+}
 
+func readFiles(r *http.Request) []*File {
+    var files []*File
+
+    r.ParseMultipartForm(8 << 20)
     fs := r.MultipartForm.File["files"]
     for _, f := range fs {
         files = append(files, NewFile(getFileInfo(f)))
     }
-    return
+    return files
 }
 
 //func UploadFilesHandler(w http.ResponseWriter, r *http.Request) {
